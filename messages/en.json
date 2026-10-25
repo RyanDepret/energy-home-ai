@@ -1,0 +1,959 @@
+{
+  "meta": {
+    "siteName": "EnergyHome AI",
+    "home": {
+      "title": "EnergyHome AI — Estimate your home’s energy rating",
+      "description": "Estimate your home’s French energy rating (DPE) in one minute with AI, understand why, and get a renovation plan with the grants you may qualify for."
+    },
+    "result": {
+      "title": "Your DPE estimate",
+      "description": "Estimated energy class, what it means, and the renovation plan proposed by the AI agent."
+    },
+    "assistant": {
+      "title": "AI assistant",
+      "description": "An assistant that answers your energy-renovation questions and cites its sources. Compare Claude and Mistral."
+    },
+    "about": {
+      "title": "About",
+      "description": "ADEME open data, machine learning and generative AI: how EnergyHome AI is built, and by whom."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "A question about your home or an AI project? Write to me."
+    },
+    "credits": {
+      "title": "Credits and sources",
+      "description": "Images, data, models, libraries and typefaces used to build EnergyHome AI."
+    },
+    "legal": {
+      "title": "Legal notice",
+      "description": "Publisher, host and intellectual property of the EnergyHome AI website."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "What data EnergyHome AI processes, why, for how long, and your rights."
+    }
+  },
+  "nav": {
+    "skip": "Skip to content",
+    "home": "Home",
+    "simulator": "Simulator",
+    "assistant": "AI assistant",
+    "about": "About",
+    "contact": "Contact",
+    "credits": "Credits",
+    "menu": "Open menu",
+    "close": "Close menu",
+    "main": "Main navigation",
+    "language": "Site language",
+    "homeLabel": "EnergyHome AI, home"
+  },
+  "footer": {
+    "talkKick": "(—) Let’s talk",
+    "talkTitle": "A question about your home, <acc>or an AI project?</acc>",
+    "leaveKick": "(—) Before you go",
+    "leaveTitle": "Your home, <acc>in one minute.</acc>",
+    "leaveText": "Estimate its energy class, then ask the assistant your questions.",
+    "estimate": "Estimate my DPE class",
+    "contactMe": "Contact me",
+    "ask": "Ask a question",
+    "explore": "Explore",
+    "follow": "Follow",
+    "ademe": "ADEME data",
+    "builtBy": "Designed and built by",
+    "role": "AI engineer",
+    "rights": "© {year} EnergyHome AI · DPE data: ADEME, Open Licence",
+    "legal": "Legal notice",
+    "privacy": "Privacy",
+    "credits": "Credits",
+    "top": "Back to top"
+  },
+  "home": {
+    "carousel": "EnergyHome AI overview",
+    "slideOf": "{n} of 3",
+    "pick": "Choose a slide",
+    "prev": "Previous slide",
+    "next": "Next slide",
+    "pause": "Pause the slideshow",
+    "play": "Resume the slideshow",
+    "badge": "Estimate my DPE class · 1 minute · free ·",
+    "scroll": "Scroll",
+    "slides": [
+      {
+        "kick": "(01) — DPE simulator · ADEME data",
+        "l1": "Your home,",
+        "l2": "<acc>finally</acc> readable.",
+        "p": "Five details are enough. A model trained on ADEME’s public energy ratings estimates your class from A to G, and explains why."
+      },
+      {
+        "kick": "(02) — French Climate and Resilience Act",
+        "l1": "Rated F or G?",
+        "l2": "<warn>Time</warn> is running out.",
+        "p": "G homes can no longer be rented out since 2025, F from 2028, E from 2034. Knowing your class means planning the work ahead."
+      },
+      {
+        "kick": "(03) — AI assistant · Claude & Mistral",
+        "l1": "An assistant",
+        "l2": "that <acc>cites its sources.</acc>",
+        "p": "It picks up your simulation result and answers your questions from official documents."
+      }
+    ],
+    "marquee": [
+      "DPE simulator",
+      "RAG Claude + Mistral",
+      "Renovation agent",
+      "ADEME data"
+    ],
+    "manifesto": {
+      "kick": "(01) — Manifesto",
+      "tag": "EnergyHome AI · 2026",
+      "text": "Every home tells an <acc>energy</acc> story. We read it with AI, translate it into a class from A to G, and suggest the <acc>work</acc> that truly matters.",
+      "steps": [
+        {
+          "verb": "Read",
+          "title": "Your home",
+          "text": "Five details are enough: floor area, construction period, type, heating, postcode."
+        },
+        {
+          "verb": "Translate",
+          "title": "A class from A to G",
+          "text": "A model trained on ADEME’s public ratings estimates the most likely class."
+        },
+        {
+          "verb": "Act",
+          "title": "The right work",
+          "text": "An AI agent prioritises the work, prices it and finds the grants you may qualify for."
+        }
+      ],
+      "stats": [
+        {
+          "value": "7",
+          "unit": "",
+          "text": "energy classes, from A to G, estimated by a machine-learning model"
+        },
+        {
+          "value": "2",
+          "unit": "",
+          "text": "language models compared side by side: Claude and Mistral"
+        },
+        {
+          "value": "1",
+          "unit": " min",
+          "text": "to get your estimate, no sign-up needed"
+        }
+      ]
+    },
+    "bricks": {
+      "kick": "(02) — Under the hood",
+      "title": "Three <acc>intelligences,</acc> one journey.",
+      "lead": "They hand over to each other: the estimate feeds the assistant, which feeds the agent.",
+      "items": [
+        {
+          "t1": "The predictive",
+          "t2": "model",
+          "text": "A Random Forest trained on ADEME’s public ratings, updated for the 2026 DPE reform. It gives the most likely class, its confidence and the criteria that weighed most.",
+          "tags": [
+            "Scikit-learn",
+            "Random Forest",
+            "ADEME"
+          ],
+          "cta": "Run a simulation"
+        },
+        {
+          "t1": "The assistant",
+          "t2": "that cites",
+          "text": "A RAG pipeline that searches official documents and answers with its sources. Claude and Mistral can be compared on the same question.",
+          "tags": [
+            "RAG",
+            "Claude",
+            "Mistral AI"
+          ],
+          "cta": "Ask a question"
+        },
+        {
+          "t1": "The renovation",
+          "t2": "agent",
+          "text": "It analyses your situation, prioritises the work, prices it and finds the grants you may qualify for.",
+          "tags": [
+            "AI agent",
+            "Works",
+            "2026 grants"
+          ],
+          "cta": "See a sample plan"
+        }
+      ]
+    },
+    "sim": {
+      "kick": "(03) — Simulator",
+      "title": "Five details.<br></br><acc>One minute.</acc>",
+      "lead": "The model compares your home with thousands of similar public ratings, then shows its most likely class and what drove the result.",
+      "scale": "DPE scale from A to G",
+      "card": "Estimate my DPE",
+      "duration": "≈ 1 MIN",
+      "surface": "Living area",
+      "surfacePh": "e.g. 85",
+      "surfaceError": "Enter an area between 9 and 1,000 m².",
+      "periode": "Construction period",
+      "periodes": {
+        "avant-1948": "Before 1948",
+        "1948-1974": "1948–1974",
+        "1975-1988": "1975–1988",
+        "1989-2005": "1989–2005",
+        "apres-2005": "After 2005"
+      },
+      "type": "Type",
+      "types": {
+        "maison": "House",
+        "appartement": "Flat"
+      },
+      "chauffage": "Heating",
+      "chauffages": {
+        "electricite": "Electricity",
+        "gaz": "Natural gas",
+        "fioul": "Heating oil",
+        "bois": "Wood",
+        "pac": "Heat pump",
+        "reseau": "District heating"
+      },
+      "cp": "Postcode",
+      "cpPh": "e.g. 83600",
+      "cpHelp": "Provence-Alpes-Côte d’Azur region only.",
+      "cpError": "Enter a postcode in the PACA region (04, 05, 06, 13, 83 or 84).",
+      "submit": "Estimate my DPE class",
+      "disclaimer": "Indicative estimate, not a substitute for an official DPE."
+    },
+    "law": {
+      "kick": "(04) — The timeline",
+      "title": "The law is moving.<br></br><acc>Get ahead of it.</acc>",
+      "lead": "The Climate and Resilience Act gradually bans renting out the least energy-efficient homes.",
+      "items": [
+        {
+          "c": "G",
+          "year": "2025",
+          "when": "Already in force",
+          "text": "No new leases for homes rated G."
+        },
+        {
+          "c": "F",
+          "year": "2028",
+          "when": "In 2 years",
+          "text": "The ban extends to homes rated F."
+        },
+        {
+          "c": "E",
+          "year": "2034",
+          "when": "In 8 years",
+          "text": "Then to homes rated E."
+        }
+      ]
+    },
+    "cta": {
+      "title": "And your<br></br><acc>home?</acc>",
+      "button": "Estimate my DPE class"
+    }
+  },
+  "result": {
+    "kick": "Your simulation result",
+    "title": "Your home is estimated at class <acc>{classe}.</acc>",
+    "loadingTitle": "Analysing your home…",
+    "back": "Edit my simulation",
+    "invalidTitle": "Some details are missing.",
+    "invalidText": "Run a simulation from the home page to get your estimate.",
+    "invalidCta": "Run a simulation",
+    "demo": "Demo mode: the API cannot be reached, the figures shown are examples, not an estimate of your home.",
+    "chips": "{type} · {surface} m² · {periode} · {chauffage} · {cp}",
+    "estimated": "Estimated class",
+    "classLabel": "Class {classe} · {label}",
+    "labels": {
+      "A": "Very efficient",
+      "B": "Efficient",
+      "C": "Fairly efficient",
+      "D": "Average",
+      "E": "Energy-intensive",
+      "F": "Poorly insulated",
+      "G": "Poorly insulated"
+    },
+    "consumption": "Matching consumption:",
+    "unit": "kWh/m²·yr",
+    "probability": "Probability",
+    "hesitates": "The model also hesitates with class {classe}.",
+    "seeDetail": "See details",
+    "scaleKick": "DPE scale · kWh/m²·yr",
+    "scaleHint": "Click a class to compare",
+    "yours": "Your home",
+    "impl": {
+      "kick": "(01) — What it means",
+      "rentKick": "Renting",
+      "rental": {
+        "free": {
+          "title": "No rental restriction",
+          "text": "Your home can be rented without any DPE-related restriction today. Work is still worth it to cut bills and improve comfort."
+        },
+        "e2034": {
+          "title": "Can be rented until 2034",
+          "text": "From 1 January 2034, homes rated E can no longer be rented out. Gaining two classes unlocks MaPrimeRénov’ for major renovations."
+        },
+        "f2028": {
+          "title": "Rental banned from 2028",
+          "text": "Rents of F-rated homes have been frozen since August 2022. From 1 January 2028, they can no longer be rented out."
+        },
+        "g2025": {
+          "title": "Rental banned since 2025",
+          "text": "No new leases since 1 January 2025, and rents have been frozen since August 2022."
+        }
+      },
+      "valueKick": "Property value",
+      "valueTitle": "The class affects the price",
+      "valueText": "The DPE appears in every sale or rental listing. A better class reassures buyers and tenants.",
+      "nextKick": "Next step",
+      "nextTitle": "A priced renovation plan",
+      "nextText": "The AI agent below suggests the priority work and the grants you may qualify for."
+    },
+    "agent": {
+      "kick": "(02) — AI agent",
+      "title": "Your renovation <acc>plan.</acc>",
+      "lead": "The agent analyses your home, suggests priced work and checks the grants you may qualify for.",
+      "run": "Get recommendations",
+      "rerun": "Regenerate",
+      "idle": "Run the agent to get a plan tailored to your home. The analysis takes about ten seconds.",
+      "steps": [
+        "Analysing your home",
+        "Finding suitable work",
+        "Checking 2026 grants"
+      ],
+      "current": "Current class",
+      "rentalUntil": "Renting",
+      "goal": "Recommended target",
+      "goalText": "Gaining classes unlocks more grants",
+      "budget": "Estimated budget",
+      "budgetText": "For all the work, before grants",
+      "situation": "Current situation",
+      "works": "Priority work",
+      "byImpact": "By impact",
+      "cost": "Estimated cost",
+      "impact": {
+        "fort": "High gain",
+        "moyen": "Medium gain",
+        "confort": "Comfort"
+      },
+      "aids": "Available grants",
+      "rules": "2026 rules",
+      "note": "Indicative amounts generated by the agent. 2026 grant rules based on the Anah guide; confirm with a France Rénov’ adviser.",
+      "error": "The agent could not answer. Please try again in a moment."
+    },
+    "transp": {
+      "kick": "(03) — Model transparency",
+      "title": "Why <acc>this estimate?</acc>",
+      "lead": "The model sometimes hesitates between two neighbouring classes. Here is its distribution and what weighed most.",
+      "uptodate": "Updated for the 2026 DPE · electricity 1.9",
+      "source": "Official source",
+      "probaTitle": "Probability by class",
+      "weightTitle": "What weighed most",
+      "weightLead": "Influence of each detail on the estimate.",
+      "criteria": {
+        "periode": "Construction period",
+        "chauffage": "Heating energy",
+        "surface": "Floor area",
+        "localisation": "Location",
+        "type": "Home type"
+      },
+      "levels": {
+        "high": "high",
+        "mid": "medium",
+        "low": "low"
+      },
+      "fbQuestion": "Does this estimate look right to you?",
+      "yes": "Yes",
+      "no": "No, I have my official DPE",
+      "official": "Class on your official DPE",
+      "send": "Send",
+      "thanks": "Thank you, your feedback helps improve the estimates.",
+      "anon": "This anonymous feedback is used to improve the model.",
+      "version": "Model version: {v}"
+    },
+    "ask": {
+      "kick": "(04) — A question?",
+      "title": "The assistant <acc>explains it all.</acc>",
+      "q1": "Why is my home rated {classe}?",
+      "q2": "What work would gain one class?",
+      "q3": "Which grants can fund the work?",
+      "disclaimerStrong": "Indicative estimate.",
+      "disclaimer": "It does not replace an official DPE, the only binding document, produced by a certified assessor.",
+      "again": "Run a new simulation"
+    }
+  },
+  "assistant": {
+    "kick": "AI assistant · RAG",
+    "title": "Answers that <acc>cite their sources.</acc>",
+    "lead": "The assistant first searches reference documents for relevant passages, then writes an answer with sources.",
+    "new": "New conversation",
+    "home": "Your home",
+    "edit": "Edit",
+    "homeNone": "No simulation yet. The assistant will answer in general terms.",
+    "homeHelp": "The assistant uses these details to tailor its answers.",
+    "how": "How it works",
+    "howSteps": [
+      {
+        "t": "Search",
+        "d": "Sentence Transformers finds the closest passages"
+      },
+      {
+        "t": "Context",
+        "d": "The passages and your home are sent to the model"
+      },
+      {
+        "t": "Writing",
+        "d": "Claude or Mistral answers and cites its sources"
+      }
+    ],
+    "name": "EnergyHome assistant",
+    "status": "Answers from a document base",
+    "modelGroup": "Language model",
+    "modes": {
+      "claude": "Claude",
+      "mistral": "Mistral",
+      "comparer": "Compare"
+    },
+    "welcome": "Hello! Ask me anything about energy renovation, the DPE or grants. I answer with my sources.",
+    "preparing": "The assistant is preparing its answer",
+    "phases": [
+      "Searching the document base",
+      "Selecting relevant passages",
+      "Writing the answer"
+    ],
+    "sources": "Sources",
+    "time": "Time",
+    "tokens": "Tokens",
+    "vote": "Most useful answer",
+    "voted": "Your choice ✓",
+    "compareNote": "Same question, same documents: only the model changes. Each vote feeds the evaluation of both models.",
+    "suggestions": [
+      "How much does loft insulation cost?",
+      "What is an energy audit?",
+      "Which grants for a heat pump?"
+    ],
+    "inputLabel": "Your question",
+    "placeholder": "Ask your question about energy renovation…",
+    "send": "Send",
+    "stop": "Stop",
+    "demo": "Demo mode: the API cannot be reached, this answer is an example.",
+    "disclaimer": "AI-generated answers based on reference documents. Check important information with a professional.",
+    "types": {
+      "maison": "House",
+      "appartement": "Flat"
+    }
+  },
+  "about": {
+    "kick": "About",
+    "title": "Making the DPE <acc>understandable</acc> for every homeowner.",
+    "lead": "Open data, machine learning and generative AI, brought together in one tool.",
+    "approachKick": "(01) — Our approach",
+    "approach": "EnergyHome AI combines ADEME’s open data, a <acc>machine-learning</acc> model and a conversational assistant to help everyone understand their home’s energy performance and <acc>plan their renovation.</acc>",
+    "bricks": [
+      {
+        "t": "The data",
+        "d": "Energy ratings published as open data by ADEME, cleaned and stored in PostgreSQL, with labels recalculated for the January 2026 DPE reform."
+      },
+      {
+        "t": "The model",
+        "d": "A Random Forest classifier (Scikit-learn) predicts the DPE class from the home’s characteristics."
+      },
+      {
+        "t": "The assistant",
+        "d": "A RAG pipeline: semantic search (Sentence Transformers), then answer generation with Claude (Anthropic) or Mistral AI."
+      }
+    ],
+    "archiKick": "(02) — Architecture",
+    "archiTitle": "How the pieces <acc>talk to each other.</acc>",
+    "archiLead": "The interface calls a Python API, which orchestrates the database, the model and the RAG pipeline.",
+    "nodes": {
+      "front": {
+        "k": "Front end",
+        "t": "Next.js · React",
+        "d": "FR/EN interface (next-intl), hosted on Vercel"
+      },
+      "api": {
+        "k": "API",
+        "t": "FastAPI",
+        "d": "Prediction and chat endpoints"
+      },
+      "data": {
+        "k": "Data",
+        "t": "PostgreSQL · SQLAlchemy",
+        "d": "ADEME ratings"
+      },
+      "model": {
+        "k": "Model",
+        "t": "Scikit-learn",
+        "d": "Random Forest · Pandas · NumPy"
+      },
+      "rag": {
+        "k": "RAG",
+        "t": "Claude & Mistral",
+        "d": "Sentence Transformers + generation"
+      }
+    },
+    "stackKick": "(03) — Tech stack",
+    "stackTitle": "From raw data <acc>to interface.</acc>",
+    "stackLead": "Each building block has a clear role, from cleaning the ratings to deployment.",
+    "bricksCount": "{n} blocks",
+    "stack": [
+      {
+        "cat": "Generative AI",
+        "items": [
+          [
+            "Claude",
+            "Anthropic · RAG LLM, answers with citations"
+          ],
+          [
+            "Mistral AI",
+            "Second LLM, compared with Claude"
+          ],
+          [
+            "RAG",
+            "Answers grounded in documents"
+          ],
+          [
+            "Sentence Transformers",
+            "Embeddings for search"
+          ],
+          [
+            "AI agent",
+            "Chains search and tools"
+          ]
+        ]
+      },
+      {
+        "cat": "API integration",
+        "items": [
+          [
+            "REST API",
+            "Next.js ↔ FastAPI exchanges"
+          ],
+          [
+            "Claude API",
+            "Messages and citations"
+          ],
+          [
+            "Mistral API",
+            "Direct HTTP requests"
+          ],
+          [
+            "next-intl",
+            "Site in French and English"
+          ]
+        ]
+      },
+      {
+        "cat": "Interface",
+        "items": [
+          [
+            "Next.js",
+            "Framework, server rendering"
+          ],
+          [
+            "React",
+            "UI components"
+          ],
+          [
+            "TypeScript",
+            "Typed browser logic"
+          ],
+          [
+            "HTML / CSS",
+            "Structure and layout"
+          ]
+        ]
+      },
+      {
+        "cat": "Back end",
+        "items": [
+          [
+            "Python",
+            "Main language"
+          ],
+          [
+            "FastAPI",
+            "Prediction and chat API"
+          ],
+          [
+            "SQLAlchemy",
+            "Database access in Python"
+          ]
+        ]
+      },
+      {
+        "cat": "Data and ML",
+        "items": [
+          [
+            "Scikit-learn",
+            "Random Forest DPE classifier"
+          ],
+          [
+            "Pandas",
+            "Cleaning ADEME ratings"
+          ],
+          [
+            "NumPy",
+            "Numerical computing"
+          ],
+          [
+            "PostgreSQL",
+            "Ratings database"
+          ],
+          [
+            "SQL",
+            "Queries and aggregations"
+          ]
+        ]
+      },
+      {
+        "cat": "Deployment",
+        "items": [
+          [
+            "Docker",
+            "Containers for the API and site"
+          ],
+          [
+            "CI/CD",
+            "Automated tests and deployment"
+          ],
+          [
+            "Vercel",
+            "Front-end hosting"
+          ]
+        ]
+      }
+    ],
+    "whoKick": "(04) — Who is behind it",
+    "whoTitle": "Ryan, <acc>AI engineer</acc> in training.",
+    "whoText": "I designed and built EnergyHome AI end to end: data, model, API and interface. I also build custom AI websites and applications.",
+    "whoCaption": "Ryan, Var",
+    "code": "See the code",
+    "contact": "Contact me",
+    "photoAlt": "Portrait of Ryan, creator of EnergyHome AI"
+  },
+  "contact": {
+    "kick": "Contact",
+    "title": "A question, or an <acc>AI project?</acc>",
+    "lead": "Whether it’s about your home or a professional project, write to me. I’ll get back to you quickly.",
+    "directKick": "(01) — Write directly",
+    "where": "Based in the Var, France · available across France, remotely or on site.",
+    "cases": [
+      {
+        "k": "Homeowner",
+        "t": "Your home",
+        "d": "A question about your estimate, your renovation work or grants."
+      },
+      {
+        "k": "Business",
+        "t": "Your AI project",
+        "d": "Website, full-stack application, RAG assistant, machine-learning model."
+      }
+    ],
+    "formTitle": "Send a message",
+    "topic": "Your request is about",
+    "topics": {
+      "logement": "My home",
+      "pro": "A business project",
+      "recrutement": "Hiring"
+    },
+    "name": "Name",
+    "email": "Email",
+    "company": "Company",
+    "message": "Message",
+    "placeholders": {
+      "logement": "Describe your home and your question…",
+      "pro": "Describe your project: goal, timeline, rough budget…",
+      "recrutement": "Describe the role or assignment…"
+    },
+    "consent": "I agree that my data will be used only to answer my request.",
+    "privacy": "Privacy policy",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "sent": "Message sent.",
+    "sentText": "Thank you, I’ll get back to you quickly.",
+    "again": "Write another message",
+    "errors": {
+      "name": "Enter your name.",
+      "email": "Enter a valid email address.",
+      "message": "Your message must be at least 10 characters long.",
+      "consent": "Your consent is required to send the message.",
+      "server": "Sending failed. Email me directly at the address shown."
+    }
+  },
+  "credits": {
+    "kick": "(—) Credits",
+    "title": "Credits <acc>& sources.</acc>",
+    "lead": "Everything that went into building EnergyHome AI, and who we owe it to.",
+    "imagesKick": "(01) — Images",
+    "imagesTitle": "Generated by <acc>artificial intelligence.</acc>",
+    "imagesLead": "These visuals illustrate the content: they do not show real homes. They were generated from prompts written for the project.",
+    "tools": "Generation tools",
+    "toolsText": "Higgsfield (Nano Banana 2 model) for the five main images, Google AI Studio (Nano Banana model) for the \"plans\" and \"desk\" images. Use is subject to each service’s terms.",
+    "images": [
+      [
+        "mas-provencal",
+        "Provençal farmhouse at sunset",
+        "Home · slide 1",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "maison-pierre-crepuscule",
+        "Stone house at dusk",
+        "Home · slide 2, Manifesto",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "salon",
+        "Renovated Mediterranean living room",
+        "Home · slide 3, AI assistant",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "combles",
+        "Loft being insulated",
+        "Result, Manifesto",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "village-perche",
+        "Hilltop village in the Var",
+        "About, final call to action",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "plans",
+        "Renovation plans on a table",
+        "Manifesto",
+        "Google AI Studio · Nano Banana"
+      ],
+      [
+        "bureau",
+        "Desk facing the sea",
+        "Contact",
+        "Google AI Studio · Nano Banana"
+      ]
+    ],
+    "sourcesKick": "(02) — Sources and tools",
+    "sourcesTitle": "Standing on <acc>others’ shoulders.</acc>",
+    "sourcesLead": "Open data, models, libraries and typefaces: each one is credited with its licence.",
+    "cols": [
+      "Item",
+      "Author",
+      "Licence",
+      "Use"
+    ],
+    "groups": [
+      {
+        "name": "Data",
+        "rows": [
+          [
+            "Existing homes DPE database",
+            "ADEME, DPE-Audit Observatory",
+            "Etalab Open Licence 2.0",
+            "Model training and statistics",
+            "https://data.ademe.fr"
+          ],
+          [
+            "2026 financial aid guide",
+            "Anah · France Rénov’",
+            "Public document",
+            "Document base for the agent and the assistant",
+            ""
+          ],
+          [
+            "Climate and Resilience Act",
+            "Légifrance",
+            "Official text",
+            "Rental ban timeline",
+            "https://www.legifrance.gouv.fr"
+          ],
+          [
+            "2026 DPE reform",
+            "French Ministry of the Economy · order of 13 August 2025",
+            "Official text",
+            "Electricity coefficient lowered to 1.9: labels recalculated",
+            "https://www.economie.gouv.fr/actualites/un-nouveau-dpe-au-1er-janvier-2026-pour-favoriser-le-chauffage-electrique"
+          ]
+        ]
+      },
+      {
+        "name": "Artificial intelligence",
+        "rows": [
+          [
+            "Claude",
+            "Anthropic",
+            "Commercial API",
+            "Answer generation with citations",
+            "https://www.anthropic.com"
+          ],
+          [
+            "Mistral AI",
+            "Mistral AI",
+            "Commercial API",
+            "Second language model, compared with Claude",
+            "https://mistral.ai"
+          ],
+          [
+            "Sentence Transformers",
+            "UKP Lab · Hugging Face",
+            "Apache 2.0",
+            "Embeddings for semantic search",
+            "https://www.sbert.net"
+          ],
+          [
+            "Scikit-learn",
+            "scikit-learn community",
+            "BSD-3-Clause",
+            "Random Forest classifier",
+            "https://scikit-learn.org"
+          ]
+        ]
+      },
+      {
+        "name": "Typefaces",
+        "rows": [
+          [
+            "Manrope",
+            "Mikhail Sharanda",
+            "SIL Open Font License",
+            "Headings and wordmark",
+            ""
+          ],
+          [
+            "Instrument Serif",
+            "Instrument",
+            "SIL Open Font License",
+            "Italic accents",
+            ""
+          ],
+          [
+            "Inter",
+            "Rasmus Andersson",
+            "SIL Open Font License",
+            "Body text",
+            ""
+          ],
+          [
+            "JetBrains Mono",
+            "JetBrains",
+            "SIL Open Font License",
+            "Labels and figures",
+            ""
+          ]
+        ]
+      },
+      {
+        "name": "Design",
+        "rows": [
+          [
+            "Design and development",
+            "Ryan",
+            "© 2026",
+            "Interface, API, model and content",
+            ""
+          ],
+          [
+            "\"Leaf-house\" logo",
+            "EnergyHome AI",
+            "© 2026",
+            "Custom-drawn mark",
+            ""
+          ],
+          [
+            "Portrait of Ryan",
+            "Professional photographer",
+            "Usage rights acquired",
+            "About page and footer",
+            ""
+          ]
+        ]
+      }
+    ],
+    "fix": "A mistake or omission in these credits?",
+    "fixLink": "Write to me",
+    "fixEnd": " and I’ll fix it quickly."
+  },
+  "legalPages": {
+    "updated": "Last updated: {date}",
+    "todo": "To be completed",
+    "legal": {
+      "kick": "(—) Legal notice",
+      "title": "Legal <acc>notice.</acc>",
+      "sections": [
+        {
+          "t": "Publisher",
+          "p": [
+            "Ryan Depret, {status}.",
+            "SIRET: {siret}.",
+            "Contact: {email}.",
+            "Publication director: Ryan Depret."
+          ]
+        },
+        {
+          "t": "Hosting",
+          "p": [
+            "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA — vercel.com."
+          ]
+        },
+        {
+          "t": "Intellectual property",
+          "p": [
+            "The design, text, logo and code of this site belong to their author unless stated otherwise. DPE data comes from ADEME and is reused under the Etalab Open Licence 2.0. Full sources are listed on the Credits page."
+          ]
+        },
+        {
+          "t": "Liability",
+          "p": [
+            "Simulator estimates and assistant answers are indicative. They replace neither an official DPE, produced by a certified assessor, nor the advice of a France Rénov’ adviser."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "kick": "(—) Privacy",
+      "title": "Your data, <acc>simply.</acc>",
+      "sections": [
+        {
+          "t": "What is collected",
+          "p": [
+            "Simulator: the five characteristics of the home (area, period, type, heating, postcode). They are used to compute the estimate and are not linked to any identity.",
+            "Feedback and votes: anonymous, used to evaluate and improve the model.",
+            "Contact form: name, email, optional company and message, used only to reply to you."
+          ]
+        },
+        {
+          "t": "AI assistant",
+          "p": [
+            "Your questions and your home’s characteristics are sent to Anthropic (Claude, USA) or Mistral AI (France) to generate the answer. Do not enter personal data."
+          ]
+        },
+        {
+          "t": "Retention",
+          "p": [
+            "Contact messages are kept for at most three years after the last exchange, then deleted."
+          ]
+        },
+        {
+          "t": "Cookies and analytics",
+          "p": [
+            "No advertising or analytics cookies. Fonts are hosted on the site: no data is sent to Google Fonts."
+          ]
+        },
+        {
+          "t": "Your rights",
+          "p": [
+            "You can request access to, correction or deletion of your data by writing to {email}. You can also lodge a complaint with the CNIL (cnil.fr)."
+          ]
+        }
+      ]
+    }
+  },
+  "notFound": {
+    "title": "This page",
+    "accent": "doesn’t exist.",
+    "text": "The link may be outdated, or the address may contain a typo.",
+    "home": "Back to home"
+  }
+}

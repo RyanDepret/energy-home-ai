@@ -1,0 +1,959 @@
+{
+  "meta": {
+    "siteName": "EnergyHome AI",
+    "home": {
+      "title": "EnergyHome AI — Estimez la classe énergétique de votre logement",
+      "description": "Estimez la classe DPE de votre logement en une minute grâce à l’IA, comprenez pourquoi, et obtenez un plan de travaux avec les aides possibles."
+    },
+    "result": {
+      "title": "Votre estimation DPE",
+      "description": "Classe énergétique estimée, ce qu’elle implique et le plan de rénovation proposé par l’agent IA."
+    },
+    "assistant": {
+      "title": "Assistant IA",
+      "description": "Un assistant qui répond à vos questions sur la rénovation énergétique en citant ses sources. Comparez Claude et Mistral."
+    },
+    "about": {
+      "title": "À propos",
+      "description": "Données publiques de l’ADEME, machine learning et IA générative : comment EnergyHome AI est construit, et par qui."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Une question sur votre logement ou un projet IA ? Écrivez-moi."
+    },
+    "credits": {
+      "title": "Crédits et sources",
+      "description": "Images, données, modèles, bibliothèques et typographies utilisés pour construire EnergyHome AI."
+    },
+    "legal": {
+      "title": "Mentions légales",
+      "description": "Éditeur, hébergeur et propriété intellectuelle du site EnergyHome AI."
+    },
+    "privacy": {
+      "title": "Confidentialité",
+      "description": "Quelles données EnergyHome AI traite, pourquoi, combien de temps, et vos droits."
+    }
+  },
+  "nav": {
+    "skip": "Aller au contenu",
+    "home": "Accueil",
+    "simulator": "Simulateur",
+    "assistant": "Assistant IA",
+    "about": "À propos",
+    "contact": "Contact",
+    "credits": "Crédits",
+    "menu": "Ouvrir le menu",
+    "close": "Fermer le menu",
+    "main": "Navigation principale",
+    "language": "Langue du site",
+    "homeLabel": "EnergyHome AI, accueil"
+  },
+  "footer": {
+    "talkKick": "(—) Parlons-en",
+    "talkTitle": "Une question sur votre logement, <acc>ou un projet IA ?</acc>",
+    "leaveKick": "(—) Avant de partir",
+    "leaveTitle": "Votre logement, <acc>en une minute.</acc>",
+    "leaveText": "Estimez sa classe énergétique, puis posez vos questions à l’assistant.",
+    "estimate": "Estimer ma classe DPE",
+    "contactMe": "Me contacter",
+    "ask": "Poser une question",
+    "explore": "Explorer",
+    "follow": "Suivre",
+    "ademe": "Données ADEME",
+    "builtBy": "Conçu et développé par",
+    "role": "ingénieur IA",
+    "rights": "© {year} EnergyHome AI · Données DPE : ADEME, Licence Ouverte",
+    "legal": "Mentions légales",
+    "privacy": "Confidentialité",
+    "credits": "Crédits",
+    "top": "Retour en haut"
+  },
+  "home": {
+    "carousel": "Présentation d’EnergyHome AI",
+    "slideOf": "{n} sur 3",
+    "pick": "Choisir une diapositive",
+    "prev": "Diapositive précédente",
+    "next": "Diapositive suivante",
+    "pause": "Mettre en pause le défilement",
+    "play": "Reprendre le défilement",
+    "badge": "Estimer ma classe DPE · 1 minute · gratuit ·",
+    "scroll": "Défiler",
+    "slides": [
+      {
+        "kick": "(01) — Simulateur DPE · Données ADEME",
+        "l1": "Votre logement,",
+        "l2": "<acc>enfin</acc> lisible.",
+        "p": "Cinq informations suffisent. Un modèle entraîné sur les DPE publics de l’ADEME estime votre classe de A à G, et vous explique pourquoi."
+      },
+      {
+        "kick": "(02) — Loi Climat et Résilience",
+        "l1": "Classé F ou G ?",
+        "l2": "<warn>Le temps</warn> presse.",
+        "p": "G interdit à la location depuis 2025, F en 2028, E en 2034. Connaître sa classe, c’est anticiper les travaux."
+      },
+      {
+        "kick": "(03) — Assistant IA · Claude & Mistral",
+        "l1": "Un assistant",
+        "l2": "qui <acc>cite ses sources.</acc>",
+        "p": "Il reprend le résultat de votre simulation et répond à vos questions à partir de documents officiels."
+      }
+    ],
+    "marquee": [
+      "Simulateur DPE",
+      "RAG Claude + Mistral",
+      "Agent de rénovation",
+      "Données ADEME"
+    ],
+    "manifesto": {
+      "kick": "(01) — Manifeste",
+      "tag": "EnergyHome AI · 2026",
+      "text": "Chaque maison raconte une histoire d’<acc>énergie.</acc> Nous la lisons avec l’IA, la traduisons en une classe de A à G, et proposons les <acc>travaux</acc> qui comptent vraiment.",
+      "steps": [
+        {
+          "verb": "Lire",
+          "title": "Votre logement",
+          "text": "Cinq informations suffisent : surface, période, type, chauffage, code postal."
+        },
+        {
+          "verb": "Traduire",
+          "title": "Une classe de A à G",
+          "text": "Un modèle entraîné sur les DPE publics de l’ADEME estime la classe la plus probable."
+        },
+        {
+          "verb": "Agir",
+          "title": "Les bons travaux",
+          "text": "Un agent IA priorise les travaux, les chiffre et repère les aides possibles."
+        }
+      ],
+      "stats": [
+        {
+          "value": "7",
+          "unit": "",
+          "text": "classes énergétiques, de A à G, estimées par un modèle de machine learning"
+        },
+        {
+          "value": "2",
+          "unit": "",
+          "text": "modèles de langage comparés côte à côte : Claude et Mistral"
+        },
+        {
+          "value": "1",
+          "unit": " min",
+          "text": "pour obtenir votre estimation, sans inscription"
+        }
+      ]
+    },
+    "bricks": {
+      "kick": "(02) — Sous le capot",
+      "title": "Trois <acc>intelligences,</acc> un seul parcours.",
+      "lead": "Elles se passent le relais : l’estimation nourrit l’assistant, qui nourrit l’agent.",
+      "items": [
+        {
+          "t1": "Le modèle",
+          "t2": "prédictif",
+          "text": "Un Random Forest entraîné sur les DPE publics de l’ADEME, à jour de la réforme du DPE 2026. Il donne la classe la plus probable, son niveau de confiance et les critères qui ont pesé.",
+          "tags": [
+            "Scikit-learn",
+            "Random Forest",
+            "ADEME"
+          ],
+          "cta": "Lancer une simulation"
+        },
+        {
+          "t1": "L’assistant",
+          "t2": "qui cite",
+          "text": "Un RAG qui interroge des documents officiels et répond avec ses sources. Claude et Mistral peuvent être comparés sur la même question.",
+          "tags": [
+            "RAG",
+            "Claude",
+            "Mistral AI"
+          ],
+          "cta": "Poser une question"
+        },
+        {
+          "t1": "L’agent",
+          "t2": "de rénovation",
+          "text": "Il analyse votre situation, priorise les travaux, les chiffre et repère les aides auxquelles vous pourriez prétendre.",
+          "tags": [
+            "Agent IA",
+            "Travaux",
+            "Aides 2026"
+          ],
+          "cta": "Voir un plan type"
+        }
+      ]
+    },
+    "sim": {
+      "kick": "(03) — Simulateur",
+      "title": "Cinq infos.<br></br><acc>Une minute.</acc>",
+      "lead": "Le modèle compare votre logement à des milliers de DPE publics similaires, puis vous montre sa classe la plus probable et ce qui a pesé dans le calcul.",
+      "scale": "Échelle DPE de A à G",
+      "card": "Simuler mon DPE",
+      "duration": "≈ 1 MIN",
+      "surface": "Surface habitable",
+      "surfacePh": "ex. 85",
+      "surfaceError": "Indiquez une surface entre 9 et 1 000 m².",
+      "periode": "Période de construction",
+      "periodes": {
+        "avant-1948": "Avant 1948",
+        "1948-1974": "1948–1974",
+        "1975-1988": "1975–1988",
+        "1989-2005": "1989–2005",
+        "apres-2005": "Après 2005"
+      },
+      "type": "Type",
+      "types": {
+        "maison": "Maison",
+        "appartement": "Appartement"
+      },
+      "chauffage": "Chauffage",
+      "chauffages": {
+        "electricite": "Électricité",
+        "gaz": "Gaz naturel",
+        "fioul": "Fioul",
+        "bois": "Bois",
+        "pac": "Pompe à chaleur",
+        "reseau": "Réseau de chaleur"
+      },
+      "cp": "Code postal",
+      "cpPh": "ex. 83600",
+      "cpHelp": "Départements de la région PACA uniquement.",
+      "cpError": "Indiquez un code postal de la région PACA (04, 05, 06, 13, 83 ou 84).",
+      "submit": "Estimer ma classe DPE",
+      "disclaimer": "Estimation indicative, elle ne remplace pas un DPE officiel."
+    },
+    "law": {
+      "kick": "(04) — Le calendrier",
+      "title": "La loi avance.<br></br><acc>Anticipez-la.</acc>",
+      "lead": "La loi Climat et Résilience interdit progressivement la mise en location des logements les plus énergivores.",
+      "items": [
+        {
+          "c": "G",
+          "year": "2025",
+          "when": "Déjà en vigueur",
+          "text": "Plus de nouveau bail possible pour les logements classés G."
+        },
+        {
+          "c": "F",
+          "year": "2028",
+          "when": "Dans 2 ans",
+          "text": "L’interdiction s’étend aux logements classés F."
+        },
+        {
+          "c": "E",
+          "year": "2034",
+          "when": "Dans 8 ans",
+          "text": "Puis aux logements classés E."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Et votre<br></br><acc>logement ?</acc>",
+      "button": "Estimer ma classe DPE"
+    }
+  },
+  "result": {
+    "kick": "Résultat de votre simulation",
+    "title": "Votre logement est estimé en classe <acc>{classe}.</acc>",
+    "loadingTitle": "Analyse de votre logement…",
+    "back": "Modifier ma simulation",
+    "invalidTitle": "Il manque des informations.",
+    "invalidText": "Lancez une simulation depuis l’accueil pour obtenir votre estimation.",
+    "invalidCta": "Faire une simulation",
+    "demo": "Mode démonstration : l’API est injoignable, les chiffres affichés sont des exemples, pas une estimation de votre logement.",
+    "chips": "{type} · {surface} m² · {periode} · {chauffage} · {cp}",
+    "estimated": "Classe estimée",
+    "classLabel": "Classe {classe} · {label}",
+    "labels": {
+      "A": "Très performant",
+      "B": "Performant",
+      "C": "Assez performant",
+      "D": "Moyen",
+      "E": "Énergivore",
+      "F": "Passoire thermique",
+      "G": "Passoire thermique"
+    },
+    "consumption": "Consommation correspondante :",
+    "unit": "kWh/m²·an",
+    "probability": "Probabilité",
+    "hesitates": "Le modèle hésite aussi avec la classe {classe}.",
+    "seeDetail": "Voir le détail",
+    "scaleKick": "Échelle DPE · kWh/m²·an",
+    "scaleHint": "Cliquez sur une classe pour comparer",
+    "yours": "Votre logement",
+    "impl": {
+      "kick": "(01) — Ce que ça implique",
+      "rentKick": "Location",
+      "rental": {
+        "free": {
+          "title": "Aucune restriction de location",
+          "text": "Votre logement peut être loué sans contrainte liée au DPE à ce jour. Des travaux restent utiles pour réduire vos factures et gagner en confort."
+        },
+        "e2034": {
+          "title": "Location possible jusqu’en 2034",
+          "text": "À partir du 1er janvier 2034, les logements classés E ne pourront plus être mis en location. Gagner deux classes ouvre droit à MaPrimeRénov’ rénovation d’ampleur."
+        },
+        "f2028": {
+          "title": "Location interdite à partir de 2028",
+          "text": "Les loyers des logements classés F sont gelés depuis août 2022. À partir du 1er janvier 2028, ils ne pourront plus être mis en location."
+        },
+        "g2025": {
+          "title": "Location interdite depuis 2025",
+          "text": "Plus de nouveau bail possible depuis le 1er janvier 2025, et les loyers sont gelés depuis août 2022."
+        }
+      },
+      "valueKick": "Valeur du bien",
+      "valueTitle": "La classe pèse sur le prix",
+      "valueText": "Le DPE figure dans toute annonce de vente ou de location. Une meilleure classe rassure les acheteurs et les locataires.",
+      "nextKick": "Prochaine étape",
+      "nextTitle": "Un plan de travaux chiffré",
+      "nextText": "L’agent IA ci-dessous propose les travaux prioritaires et les aides auxquelles vous pourriez prétendre."
+    },
+    "agent": {
+      "kick": "(02) — Agent IA",
+      "title": "Votre plan <acc>de rénovation.</acc>",
+      "lead": "L’agent analyse votre logement, propose des travaux chiffrés et vérifie les aides auxquelles vous pouvez prétendre.",
+      "run": "Obtenir des recommandations",
+      "rerun": "Régénérer",
+      "idle": "Lancez l’agent pour obtenir un plan adapté à votre logement. L’analyse prend une dizaine de secondes.",
+      "steps": [
+        "Analyse de votre logement",
+        "Recherche des travaux adaptés",
+        "Vérification des aides 2026"
+      ],
+      "current": "Classe actuelle",
+      "rentalUntil": "Location",
+      "goal": "Objectif conseillé",
+      "goalText": "Gagner des classes ouvre droit à plus d’aides",
+      "budget": "Budget estimé",
+      "budgetText": "Pour l’ensemble des travaux, avant aides",
+      "situation": "Situation actuelle",
+      "works": "Travaux prioritaires",
+      "byImpact": "Par ordre d’impact",
+      "cost": "Coût estimé",
+      "impact": {
+        "fort": "Gain fort",
+        "moyen": "Gain moyen",
+        "confort": "Confort"
+      },
+      "aids": "Aides disponibles",
+      "rules": "Règles 2026",
+      "note": "Montants indicatifs générés par l’agent. Règles des aides 2026 d’après le guide de l’Anah, à confirmer avec un conseiller France Rénov’.",
+      "error": "L’agent n’a pas pu répondre. Réessayez dans un instant."
+    },
+    "transp": {
+      "kick": "(03) — Transparence du modèle",
+      "title": "Pourquoi <acc>cette estimation ?</acc>",
+      "lead": "Le modèle hésite parfois entre deux classes voisines. Voici sa répartition et ce qui a le plus pesé.",
+      "uptodate": "À jour du DPE 2026 · électricité 1,9",
+      "source": "Source officielle",
+      "probaTitle": "Probabilité par classe",
+      "weightTitle": "Ce qui a le plus pesé",
+      "weightLead": "Influence de chaque information sur l’estimation.",
+      "criteria": {
+        "periode": "Période de construction",
+        "chauffage": "Énergie de chauffage",
+        "surface": "Surface",
+        "localisation": "Localisation",
+        "type": "Type de logement"
+      },
+      "levels": {
+        "high": "forte",
+        "mid": "moyenne",
+        "low": "faible"
+      },
+      "fbQuestion": "Cette estimation vous semble-t-elle juste ?",
+      "yes": "Oui",
+      "no": "Non, j’ai mon DPE officiel",
+      "official": "Classe de votre DPE officiel",
+      "send": "Envoyer",
+      "thanks": "Merci, votre retour aide à améliorer les estimations.",
+      "anon": "Ces retours anonymes servent à améliorer le modèle.",
+      "version": "Version du modèle : {v}"
+    },
+    "ask": {
+      "kick": "(04) — Une question ?",
+      "title": "L’assistant vous <acc>explique tout.</acc>",
+      "q1": "Pourquoi mon logement est-il classé {classe} ?",
+      "q2": "Quels travaux pour gagner une classe ?",
+      "q3": "Quelles aides pour financer les travaux ?",
+      "disclaimerStrong": "Estimation indicative.",
+      "disclaimer": "Elle ne remplace pas un DPE officiel, seul document opposable, réalisé par un diagnostiqueur certifié.",
+      "again": "Faire une nouvelle simulation"
+    }
+  },
+  "assistant": {
+    "kick": "Assistant IA · RAG",
+    "title": "Des réponses qui <acc>citent leurs sources.</acc>",
+    "lead": "L’assistant cherche d’abord les passages pertinents dans des documents de référence, puis rédige une réponse sourcée.",
+    "new": "Nouvelle conversation",
+    "home": "Votre logement",
+    "edit": "Modifier",
+    "homeNone": "Aucune simulation pour l’instant. L’assistant répondra de façon générale.",
+    "homeHelp": "L’assistant utilise ces informations pour personnaliser ses réponses.",
+    "how": "Comment ça marche",
+    "howSteps": [
+      {
+        "t": "Recherche",
+        "d": "Sentence Transformers trouve les passages proches"
+      },
+      {
+        "t": "Contexte",
+        "d": "Les passages et votre logement sont transmis au modèle"
+      },
+      {
+        "t": "Rédaction",
+        "d": "Claude ou Mistral répond en citant ses sources"
+      }
+    ],
+    "name": "Assistant EnergyHome",
+    "status": "Répond à partir d’une base documentaire",
+    "modelGroup": "Modèle de langage",
+    "modes": {
+      "claude": "Claude",
+      "mistral": "Mistral",
+      "comparer": "Comparer"
+    },
+    "welcome": "Bonjour ! Posez-moi une question sur la rénovation énergétique, le DPE ou les aides. Je réponds en citant mes sources.",
+    "preparing": "L’assistant prépare sa réponse",
+    "phases": [
+      "Recherche dans la base documentaire",
+      "Sélection des passages pertinents",
+      "Rédaction de la réponse"
+    ],
+    "sources": "Sources",
+    "time": "Temps",
+    "tokens": "Jetons",
+    "vote": "Réponse la plus utile",
+    "voted": "Votre choix ✓",
+    "compareNote": "Même question, mêmes documents : seul le modèle change. Chaque vote alimente l’évaluation des deux modèles.",
+    "suggestions": [
+      "Combien coûte une isolation des combles ?",
+      "Qu’est-ce qu’un audit énergétique ?",
+      "Quelles aides pour une pompe à chaleur ?"
+    ],
+    "inputLabel": "Votre question",
+    "placeholder": "Posez votre question sur la rénovation énergétique…",
+    "send": "Envoyer",
+    "stop": "Arrêter",
+    "demo": "Mode démonstration : l’API est injoignable, cette réponse est un exemple.",
+    "disclaimer": "Réponses générées par IA à partir de documents de référence. Vérifiez les informations importantes auprès d’un professionnel.",
+    "types": {
+      "maison": "Maison",
+      "appartement": "Appartement"
+    }
+  },
+  "about": {
+    "kick": "À propos",
+    "title": "Rendre le DPE <acc>compréhensible</acc> pour chaque propriétaire.",
+    "lead": "Données publiques, machine learning et IA générative, réunis dans un seul outil.",
+    "approachKick": "(01) — Notre approche",
+    "approach": "EnergyHome AI combine les données publiques de l’ADEME, un modèle de <acc>machine learning</acc> et un assistant conversationnel pour aider chacun à comprendre la performance énergétique de son logement et à <acc>préparer ses travaux.</acc>",
+    "bricks": [
+      {
+        "t": "Les données",
+        "d": "Les DPE publiés en open data par l’ADEME, nettoyés et stockés dans PostgreSQL, avec des étiquettes recalculées selon la réforme du DPE de janvier 2026."
+      },
+      {
+        "t": "Le modèle",
+        "d": "Un classifieur Random Forest (Scikit-learn) prédit la classe DPE à partir des caractéristiques du logement."
+      },
+      {
+        "t": "L’assistant",
+        "d": "Un pipeline RAG : recherche sémantique (Sentence Transformers) puis génération de la réponse avec Claude (Anthropic) ou Mistral AI."
+      }
+    ],
+    "archiKick": "(02) — Architecture",
+    "archiTitle": "Comment les briques <acc>communiquent.</acc>",
+    "archiLead": "L’interface interroge une API Python, qui orchestre la base de données, le modèle et le pipeline RAG.",
+    "nodes": {
+      "front": {
+        "k": "Front",
+        "t": "Next.js · React",
+        "d": "Interface FR/EN (next-intl), hébergée sur Vercel"
+      },
+      "api": {
+        "k": "API",
+        "t": "FastAPI",
+        "d": "Endpoints de prédiction et de chat"
+      },
+      "data": {
+        "k": "Données",
+        "t": "PostgreSQL · SQLAlchemy",
+        "d": "DPE ADEME"
+      },
+      "model": {
+        "k": "Modèle",
+        "t": "Scikit-learn",
+        "d": "Random Forest · Pandas · NumPy"
+      },
+      "rag": {
+        "k": "RAG",
+        "t": "Claude & Mistral",
+        "d": "Sentence Transformers + génération"
+      }
+    },
+    "stackKick": "(03) — Stack technique",
+    "stackTitle": "De la donnée brute <acc>à l’interface.</acc>",
+    "stackLead": "Chaque brique a un rôle précis dans le produit, du nettoyage des DPE au déploiement.",
+    "bricksCount": "{n} briques",
+    "stack": [
+      {
+        "cat": "IA générative",
+        "items": [
+          [
+            "Claude",
+            "Anthropic · LLM du RAG, réponses avec citations"
+          ],
+          [
+            "Mistral AI",
+            "Second LLM, comparé à Claude"
+          ],
+          [
+            "RAG",
+            "Réponses fondées sur des documents"
+          ],
+          [
+            "Sentence Transformers",
+            "Embeddings pour la recherche"
+          ],
+          [
+            "Agent IA",
+            "Enchaîne recherche et outils"
+          ]
+        ]
+      },
+      {
+        "cat": "Intégration d’API",
+        "items": [
+          [
+            "API REST",
+            "Échanges Next.js ↔ FastAPI"
+          ],
+          [
+            "API Claude",
+            "Messages et citations"
+          ],
+          [
+            "API Mistral",
+            "Requêtes HTTP directes"
+          ],
+          [
+            "next-intl",
+            "Site en français et en anglais"
+          ]
+        ]
+      },
+      {
+        "cat": "Interface",
+        "items": [
+          [
+            "Next.js",
+            "Framework, rendu côté serveur"
+          ],
+          [
+            "React",
+            "Composants d’interface"
+          ],
+          [
+            "TypeScript",
+            "Logique côté navigateur, typée"
+          ],
+          [
+            "HTML / CSS",
+            "Structure et mise en page"
+          ]
+        ]
+      },
+      {
+        "cat": "Back-end",
+        "items": [
+          [
+            "Python",
+            "Langage principal"
+          ],
+          [
+            "FastAPI",
+            "API de prédiction et de chat"
+          ],
+          [
+            "SQLAlchemy",
+            "Accès à la base en Python"
+          ]
+        ]
+      },
+      {
+        "cat": "Données et ML",
+        "items": [
+          [
+            "Scikit-learn",
+            "Random Forest de classification DPE"
+          ],
+          [
+            "Pandas",
+            "Nettoyage des DPE ADEME"
+          ],
+          [
+            "NumPy",
+            "Calcul numérique"
+          ],
+          [
+            "PostgreSQL",
+            "Base des diagnostics"
+          ],
+          [
+            "SQL",
+            "Requêtes et agrégations"
+          ]
+        ]
+      },
+      {
+        "cat": "Déploiement",
+        "items": [
+          [
+            "Docker",
+            "Conteneurisation de l’API et du site"
+          ],
+          [
+            "CI/CD",
+            "Tests et déploiement automatiques"
+          ],
+          [
+            "Vercel",
+            "Hébergement de l’interface"
+          ]
+        ]
+      }
+    ],
+    "whoKick": "(04) — Qui est derrière le projet",
+    "whoTitle": "Ryan, <acc>ingénieur IA</acc> en formation.",
+    "whoText": "J’ai conçu et développé EnergyHome AI de bout en bout : données, modèle, API et interface. Je réalise aussi des sites et applications IA sur mesure.",
+    "whoCaption": "Ryan, Var",
+    "code": "Voir le code",
+    "contact": "Me contacter",
+    "photoAlt": "Portrait de Ryan, créateur d’EnergyHome AI"
+  },
+  "contact": {
+    "kick": "Contact",
+    "title": "Une question, ou un <acc>projet IA ?</acc>",
+    "lead": "Que ce soit pour votre logement ou pour un projet professionnel, écrivez-moi. Je vous réponds rapidement.",
+    "directKick": "(01) — Écrire directement",
+    "where": "Basé dans le Var · disponible partout en France, à distance ou sur site.",
+    "cases": [
+      {
+        "k": "Particulier",
+        "t": "Votre logement",
+        "d": "Une question sur votre estimation, vos travaux ou les aides."
+      },
+      {
+        "k": "Professionnel",
+        "t": "Votre projet IA",
+        "d": "Site web, application full-stack, assistant RAG, modèle de machine learning."
+      }
+    ],
+    "formTitle": "Envoyer un message",
+    "topic": "Votre demande concerne",
+    "topics": {
+      "logement": "Mon logement",
+      "pro": "Un projet pro",
+      "recrutement": "Recrutement"
+    },
+    "name": "Nom",
+    "email": "Email",
+    "company": "Entreprise",
+    "message": "Message",
+    "placeholders": {
+      "logement": "Décrivez votre logement et votre question…",
+      "pro": "Décrivez votre projet : objectif, délais, budget indicatif…",
+      "recrutement": "Présentez le poste ou la mission…"
+    },
+    "consent": "J’accepte que mes données soient utilisées uniquement pour répondre à ma demande.",
+    "privacy": "Politique de confidentialité",
+    "submit": "Envoyer le message",
+    "sending": "Envoi…",
+    "sent": "Message envoyé.",
+    "sentText": "Merci, je vous réponds rapidement.",
+    "again": "Écrire un autre message",
+    "errors": {
+      "name": "Indiquez votre nom.",
+      "email": "Indiquez une adresse email valide.",
+      "message": "Votre message doit faire au moins 10 caractères.",
+      "consent": "Votre accord est nécessaire pour envoyer le message.",
+      "server": "L’envoi a échoué. Écrivez-moi directement à l’adresse ci-contre."
+    }
+  },
+  "credits": {
+    "kick": "(—) Crédits",
+    "title": "Crédits <acc>& sources.</acc>",
+    "lead": "Tout ce qui a servi à construire EnergyHome AI, et à qui on le doit.",
+    "imagesKick": "(01) — Images",
+    "imagesTitle": "Générées par <acc>intelligence artificielle.</acc>",
+    "imagesLead": "Ces visuels illustrent le propos : ils ne représentent pas des logements réels. Ils ont été générés à partir de prompts rédigés pour le projet.",
+    "tools": "Outils de génération",
+    "toolsText": "Higgsfield (modèle Nano Banana 2) pour les cinq images principales, Google AI Studio (modèle Nano Banana) pour les images « plans » et « bureau ». Utilisation soumise aux conditions générales de chaque service.",
+    "images": [
+      [
+        "mas-provencal",
+        "Mas provençal au coucher du soleil",
+        "Accueil · diapositive 1",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "maison-pierre-crepuscule",
+        "Maison en pierre au crépuscule",
+        "Accueil · diapositive 2, Manifeste",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "salon",
+        "Salon méditerranéen rénové",
+        "Accueil · diapositive 3, Assistant IA",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "combles",
+        "Combles en cours d’isolation",
+        "Résultat, Manifeste",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "village-perche",
+        "Village perché du Var",
+        "À propos, appel final",
+        "Higgsfield · Nano Banana 2"
+      ],
+      [
+        "plans",
+        "Plans de rénovation sur une table",
+        "Manifeste",
+        "Google AI Studio · Nano Banana"
+      ],
+      [
+        "bureau",
+        "Bureau face à la mer",
+        "Contact",
+        "Google AI Studio · Nano Banana"
+      ]
+    ],
+    "sourcesKick": "(02) — Sources et outils",
+    "sourcesTitle": "Sur les épaules <acc>des autres.</acc>",
+    "sourcesLead": "Données publiques, modèles, bibliothèques et typographies : chaque brique est citée avec sa licence.",
+    "cols": [
+      "Élément",
+      "Auteur",
+      "Licence",
+      "Usage"
+    ],
+    "groups": [
+      {
+        "name": "Données",
+        "rows": [
+          [
+            "Base des DPE des logements existants",
+            "ADEME, Observatoire DPE-Audit",
+            "Licence Ouverte Etalab 2.0",
+            "Entraînement du modèle et statistiques",
+            "https://data.ademe.fr"
+          ],
+          [
+            "Guide des aides financières 2026",
+            "Anah · France Rénov’",
+            "Document public",
+            "Base documentaire de l’agent et de l’assistant",
+            ""
+          ],
+          [
+            "Loi Climat et Résilience",
+            "Légifrance",
+            "Texte officiel",
+            "Calendrier des interdictions de location",
+            "https://www.legifrance.gouv.fr"
+          ],
+          [
+            "Réforme du DPE 2026",
+            "Ministère de l’Économie · arrêté du 13 août 2025",
+            "Texte officiel",
+            "Coefficient de l’électricité ramené à 1,9 : étiquettes recalculées",
+            "https://www.economie.gouv.fr/actualites/un-nouveau-dpe-au-1er-janvier-2026-pour-favoriser-le-chauffage-electrique"
+          ]
+        ]
+      },
+      {
+        "name": "Intelligence artificielle",
+        "rows": [
+          [
+            "Claude",
+            "Anthropic",
+            "API commerciale",
+            "Génération des réponses avec citations",
+            "https://www.anthropic.com"
+          ],
+          [
+            "Mistral AI",
+            "Mistral AI",
+            "API commerciale",
+            "Second modèle de langage, comparé à Claude",
+            "https://mistral.ai"
+          ],
+          [
+            "Sentence Transformers",
+            "UKP Lab · Hugging Face",
+            "Apache 2.0",
+            "Embeddings pour la recherche sémantique",
+            "https://www.sbert.net"
+          ],
+          [
+            "Scikit-learn",
+            "Communauté scikit-learn",
+            "BSD-3-Clause",
+            "Classifieur Random Forest",
+            "https://scikit-learn.org"
+          ]
+        ]
+      },
+      {
+        "name": "Typographies",
+        "rows": [
+          [
+            "Manrope",
+            "Mikhail Sharanda",
+            "SIL Open Font License",
+            "Titres et logotype",
+            ""
+          ],
+          [
+            "Instrument Serif",
+            "Instrument",
+            "SIL Open Font License",
+            "Accents italiques",
+            ""
+          ],
+          [
+            "Inter",
+            "Rasmus Andersson",
+            "SIL Open Font License",
+            "Texte courant",
+            ""
+          ],
+          [
+            "JetBrains Mono",
+            "JetBrains",
+            "SIL Open Font License",
+            "Étiquettes et chiffres",
+            ""
+          ]
+        ]
+      },
+      {
+        "name": "Conception",
+        "rows": [
+          [
+            "Design et développement",
+            "Ryan",
+            "© 2026",
+            "Interface, API, modèle et contenus",
+            ""
+          ],
+          [
+            "Logo « feuille-maison »",
+            "EnergyHome AI",
+            "© 2026",
+            "Marque dessinée sur mesure",
+            ""
+          ],
+          [
+            "Portrait de Ryan",
+            "Photographe professionnel",
+            "Droits d’utilisation acquis",
+            "Page À propos et pied de page",
+            ""
+          ]
+        ]
+      }
+    ],
+    "fix": "Une erreur ou un oubli dans ces crédits ?",
+    "fixLink": "Écrivez-moi",
+    "fixEnd": ", je corrige rapidement."
+  },
+  "legalPages": {
+    "updated": "Dernière mise à jour : {date}",
+    "todo": "À compléter",
+    "legal": {
+      "kick": "(—) Mentions légales",
+      "title": "Mentions <acc>légales.</acc>",
+      "sections": [
+        {
+          "t": "Éditeur du site",
+          "p": [
+            "Ryan Depret, {status}.",
+            "SIRET : {siret}.",
+            "Contact : {email}.",
+            "Directeur de la publication : Ryan Depret."
+          ]
+        },
+        {
+          "t": "Hébergement",
+          "p": [
+            "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis — vercel.com."
+          ]
+        },
+        {
+          "t": "Propriété intellectuelle",
+          "p": [
+            "Le design, les textes, le logo et le code du site sont la propriété de leur auteur, sauf mention contraire. Les données DPE proviennent de l’ADEME et sont réutilisées sous Licence Ouverte Etalab 2.0. Le détail des sources figure sur la page Crédits."
+          ]
+        },
+        {
+          "t": "Responsabilité",
+          "p": [
+            "Les estimations du simulateur et les réponses de l’assistant sont indicatives. Elles ne remplacent ni un DPE officiel, réalisé par un diagnostiqueur certifié, ni l’avis d’un conseiller France Rénov’."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "kick": "(—) Confidentialité",
+      "title": "Vos données, <acc>simplement.</acc>",
+      "sections": [
+        {
+          "t": "Ce qui est collecté",
+          "p": [
+            "Simulateur : les cinq caractéristiques du logement (surface, période, type, chauffage, code postal). Elles servent à calculer l’estimation et ne sont associées à aucune identité.",
+            "Retours et votes : anonymes, ils servent à évaluer et améliorer le modèle.",
+            "Formulaire de contact : nom, email, entreprise facultative et message, utilisés uniquement pour vous répondre."
+          ]
+        },
+        {
+          "t": "Assistant IA",
+          "p": [
+            "Vos questions et les caractéristiques de votre logement sont transmises à Anthropic (Claude, États-Unis) ou à Mistral AI (France) pour générer la réponse. N’y saisissez pas de données personnelles."
+          ]
+        },
+        {
+          "t": "Durée de conservation",
+          "p": [
+            "Les messages de contact sont conservés trois ans au plus après le dernier échange, puis supprimés."
+          ]
+        },
+        {
+          "t": "Cookies et mesure d’audience",
+          "p": [
+            "Aucun cookie publicitaire ni de mesure d’audience. Les polices sont hébergées sur le site : aucune donnée n’est envoyée à Google Fonts."
+          ]
+        },
+        {
+          "t": "Vos droits",
+          "p": [
+            "Vous pouvez demander l’accès, la rectification ou la suppression de vos données en écrivant à {email}. Vous pouvez aussi saisir la CNIL (cnil.fr)."
+          ]
+        }
+      ]
+    }
+  },
+  "notFound": {
+    "title": "Cette page",
+    "accent": "n’existe pas.",
+    "text": "Le lien est peut-être ancien, ou l’adresse contient une faute de frappe.",
+    "home": "Retour à l’accueil"
+  }
+}
