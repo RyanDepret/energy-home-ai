@@ -5,6 +5,7 @@ Site vitrine et produit d'EnergyHome AI, conçu par Ryan (ingénieur IA en forma
 ## Commandes
 - `npm run dev` · `npm run typecheck` · `npm run lint` · `npm run build`
 - Avant de dire qu'une tâche est finie : typecheck + lint + build doivent passer.
+- Avant d'écrire du code Next.js ou next-intl, consulter la documentation à jour via context7 (Next 15, next-intl 4) : leurs API ont changé par rapport aux versions précédentes.
 
 ## Règles de design (direction « Nuit », validée)
 - **Aucun effet de mouvement au survol** : pas de curseur personnalisé, pas d'élément qui bouge ou grossit. Au survol, seulement des changements de couleur.
