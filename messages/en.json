@@ -11,7 +11,7 @@
     },
     "assistant": {
       "title": "AI assistant",
-      "description": "An assistant that answers your energy-renovation questions and cites its sources. Compare Claude and Mistral."
+      "description": "An assistant that answers your energy-renovation questions from reference documents and shows the excerpts it used."
     },
     "about": {
       "title": "About",
@@ -100,7 +100,7 @@
     ],
     "marquee": [
       "DPE simulator",
-      "RAG Claude + Mistral",
+      "RAG Mistral + Claude",
       "Renovation agent",
       "ADEME data"
     ],
@@ -134,7 +134,7 @@
         {
           "value": "2",
           "unit": "",
-          "text": "language models compared side by side: Claude and Mistral"
+          "text": "AI models in the assistant: Mistral for search, Claude for writing"
         },
         {
           "value": "1",
@@ -151,10 +151,10 @@
         {
           "t1": "The predictive",
           "t2": "model",
-          "text": "A Random Forest trained on ADEME’s public ratings, updated for the 2026 DPE reform. It gives the most likely class, its confidence and the criteria that weighed most.",
+          "text": "A LightGBM model trained on ADEME’s public energy ratings in the PACA region, updated for the 2026 DPE reform. It gives the most likely class, calibrated probabilities and the criteria that weighed most.",
           "tags": [
-            "Scikit-learn",
-            "Random Forest",
+            "LightGBM",
+            "PACA",
             "ADEME"
           ],
           "cta": "Run a simulation"
@@ -162,7 +162,7 @@
         {
           "t1": "The assistant",
           "t2": "that cites",
-          "text": "A RAG pipeline that searches official documents and answers with its sources. Claude and Mistral can be compared on the same question.",
+          "text": "A RAG pipeline that searches reference documents (Mistral embeddings), then writes the answer with Claude Haiku and shows the excerpts it used.",
           "tags": [
             "RAG",
             "Claude",
@@ -447,11 +447,11 @@
       },
       {
         "t": "The model",
-        "d": "A Random Forest classifier (Scikit-learn) predicts the DPE class from the home’s characteristics."
+        "d": "A LightGBM classifier, trained on ratings from the PACA region, predicts the DPE class from the home’s characteristics; its probabilities are calibrated (isotonic regression)."
       },
       {
         "t": "The assistant",
-        "d": "A RAG pipeline: semantic search (Sentence Transformers), then answer generation with Claude (Anthropic) or Mistral AI."
+        "d": "A RAG pipeline: semantic search (Mistral embeddings), then answer generation with Claude Haiku (Anthropic)."
       }
     ],
     "archiKick": "(02) — Architecture",
@@ -475,13 +475,13 @@
       },
       "model": {
         "k": "Model",
-        "t": "Scikit-learn",
-        "d": "Random Forest · Pandas · NumPy"
+        "t": "LightGBM",
+        "d": "Isotonic calibration · Pandas · NumPy"
       },
       "rag": {
         "k": "RAG",
-        "t": "Claude & Mistral",
-        "d": "Sentence Transformers + generation"
+        "t": "Mistral & Claude",
+        "d": "Mistral embeddings + Claude Haiku generation"
       }
     },
     "stackKick": "(03) — Tech stack",
@@ -493,24 +493,20 @@
         "cat": "Generative AI",
         "items": [
           [
-            "Claude",
-            "Anthropic · RAG LLM, answers with citations"
+            "Claude Haiku",
+            "Anthropic · writes answers and recommendations"
           ],
           [
             "Mistral AI",
-            "Second LLM, compared with Claude"
+            "Embeddings for semantic search"
           ],
           [
             "RAG",
             "Answers grounded in documents"
           ],
           [
-            "Sentence Transformers",
-            "Embeddings for search"
-          ],
-          [
             "AI agent",
-            "Chains search and tools"
+            "Document search, then recommendations"
           ]
         ]
       },
@@ -523,11 +519,11 @@
           ],
           [
             "Claude API",
-            "Messages and citations"
+            "Text generation"
           ],
           [
             "Mistral API",
-            "Direct HTTP requests"
+            "Embeddings, direct HTTP requests"
           ],
           [
             "next-intl",
@@ -577,8 +573,8 @@
         "cat": "Data and ML",
         "items": [
           [
-            "Scikit-learn",
-            "Random Forest DPE classifier"
+            "LightGBM",
+            "DPE classification, calibrated probabilities"
           ],
           [
             "Pandas",
@@ -773,31 +769,31 @@
         "name": "Artificial intelligence",
         "rows": [
           [
-            "Claude",
+            "Claude Haiku",
             "Anthropic",
             "Commercial API",
-            "Answer generation with citations",
+            "Answer and recommendation generation",
             "https://www.anthropic.com"
           ],
           [
             "Mistral AI",
             "Mistral AI",
             "Commercial API",
-            "Second language model, compared with Claude",
+            "Embeddings for semantic search (mistral-embed)",
             "https://mistral.ai"
           ],
           [
-            "Sentence Transformers",
-            "UKP Lab · Hugging Face",
-            "Apache 2.0",
-            "Embeddings for semantic search",
-            "https://www.sbert.net"
+            "LightGBM",
+            "Microsoft",
+            "MIT",
+            "DPE class classifier",
+            "https://lightgbm.readthedocs.io"
           ],
           [
             "Scikit-learn",
             "scikit-learn community",
             "BSD-3-Clause",
-            "Random Forest classifier",
+            "Calibration and search similarity",
             "https://scikit-learn.org"
           ]
         ]
@@ -909,15 +905,14 @@
         {
           "t": "What is collected",
           "p": [
-            "Simulator: the five characteristics of the home (area, period, type, heating, postcode). They are used to compute the estimate and are not linked to any identity.",
-            "Feedback and votes: anonymous, used to evaluate and improve the model.",
+            "Simulator: the home’s characteristics (area, period or year, type, heating, postcode). They are used to compute the estimate and are not linked to any identity.",
             "Contact form: name, email, optional company and message, used only to reply to you."
           ]
         },
         {
           "t": "AI assistant",
           "p": [
-            "Your questions and your home’s characteristics are sent to Anthropic (Claude, USA) or Mistral AI (France) to generate the answer. Do not enter personal data."
+            "Your questions are sent to Mistral AI (France) to find relevant passages, then to Anthropic (Claude, USA) to write the answer. If you run the recommendations agent, your home’s characteristics and estimated class are sent to Anthropic to write the recommendations. Do not enter personal data."
           ]
         },
         {
