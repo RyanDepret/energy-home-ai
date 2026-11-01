@@ -1,16 +1,26 @@
 # EnergyHome AI — site web (direction « Nuit »)
 
-Interface Next.js d'EnergyHome AI : simulateur de classe DPE, agent de rénovation et assistant RAG (Claude + Mistral), en français et en anglais.
+Interface Next.js d'EnergyHome AI : simulateur de classe DPE, agent de rénovation et assistant RAG (embeddings Mistral, génération Claude Haiku), en français et en anglais.
 
-## Démarrer
+## Démarrer (site + API en local)
 
-```bash
-npm install
-cp .env.example .env.local   # puis renseigne les valeurs
-npm run dev                  # http://localhost:3000
-```
+Le site appelle l’API FastAPI du dépôt `energyhome-api` (branche `v2`), à placer à côté de ce dépôt (`../energyhome-api`).
 
-Sans `NEXT_PUBLIC_API_URL`, le site fonctionne en **mode démonstration** : les résultats sont des exemples, et un bandeau le signale toujours.
+1. **API** (premier terminal, PowerShell) :
+   ```powershell
+   cd ..\energyhome-api
+   .venv\Scripts\activate
+   uvicorn app.main:app --port 8000
+   ```
+   L’API lit ses clés dans `../energyhome-api/.env` : `ANTHROPIC_API_KEY` (génération, Claude Haiku) et `MISTRAL_API_KEY` (embeddings). Sans elles, `/predict` fonctionne mais `/agent` et `/chat` renvoient une erreur 500. L’origine `http://localhost:3000` est autorisée par défaut dans son CORS (`cors_origins`).
+2. **Site** (second terminal) :
+   ```bash
+   npm install
+   cp .env.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:8000
+   npm run dev                  # http://localhost:3000
+   ```
+
+**Mode démonstration** : uniquement quand l’API est injoignable (pas de `NEXT_PUBLIC_API_URL`, erreur réseau, délai dépassé). Les résultats sont alors des exemples, et un bandeau le signale toujours. Une erreur renvoyée par l’API (422, 500) est affichée comme une erreur, jamais remplacée par une démo.
 
 | Commande | Rôle |
 | --- | --- |
@@ -29,33 +39,42 @@ Sans `NEXT_PUBLIC_API_URL`, le site fonctionne en **mode démonstration** : les 
 
 ## Contrat d'API (FastAPI)
 
-Tous les appels sont des `POST` JSON. Les adapter se fait à un seul endroit : `src/lib/api.ts`.
+Source de vérité : le code de l’API (`energyhome-api/app/schemas/` et `app/api/`, branche `v2`). Tous les appels sont des `POST` JSON ; côté site, tout passe par `src/lib/api.ts`.
 
-**`/predict`** — entrée :
+**`/predict`** — entrée (fournir `periode` **ou** `annee_construction`, pas les deux) :
 ```json
-{ "surface": 85, "periode": "1948-1974", "type": "maison", "chauffage": "fioul", "code_postal": "83600" }
+{ "surface": 85, "periode": "1948_1974", "type_batiment": "maison", "chauffage": "fioul", "code_postal": "83600" }
 ```
-sortie :
+- `surface` : 9 à 1000 ; `annee_construction` : 1800 à l’année en cours ; `code_postal` : 5 chiffres, départements 04, 05, 06, 13, 83, 84.
+- `periode` : `avant_1948`, `1948_1974`, `1975_1977`, `1978_1982`, `1983_1988`, `1989_2000`, `2001_2005`, `2006_2012`, `2013_2021`, `apres_2021`.
+- `type_batiment` : `maison`, `appartement`.
+- `chauffage` : `electricite`, `electricite_renouvelable`, `gaz_naturel`, `fioul`, `gpl`, `propane`, `bois_buches`, `bois_granules`, `bois_plaquettes`, `reseau_chaleur` (pompe à chaleur = `electricite`).
+
+Sortie (valeurs d’exemple, pas un résultat réel) :
 ```json
-{ "classe": "E", "probabilites": { "A": 0.01, "B": 0.02, "C": 0.05, "D": 0.2, "E": 0.5, "F": 0.18, "G": 0.04 },
-  "importances": [{ "critere": "periode", "valeur": "1948-1974", "poids": 0.88 }], "model_version": "v2-dpe2026" }
+{ "classe": "D", "probabilites": { "A": 0.0, "B": 0.01, "C": 0.2, "D": 0.45, "E": 0.25, "F": 0.07, "G": 0.02 },
+  "importances": [{ "critere": "Période de construction", "valeur": "1948_1974", "poids": 0.41 }],
+  "model_version": "v3-lightgbm-2026-11", "entree": { "…": "…" } }
 ```
-`critere` ∈ `periode`, `chauffage`, `surface`, `localisation`, `type` ; `poids` entre 0 et 1.
+Les probabilités calibrées peuvent valoir exactement 0 : le site affiche « < 1 % » sans modifier la valeur. `critere` est un libellé français (`Surface`, `Période de construction`, `Type de bâtiment`, `Énergie de chauffage`, `Département`, `Zone climatique`), traduit via `src/lib/criteres.ts` ; un libellé inconnu s’affiche tel quel. Les poids font 1 au total. Erreur de validation : 422, `{ "detail": [{ "msg": "Value error, …" }] }`, dont le message est affiché.
 
-**`/agent/plan`** — entrée : le logement + `"classe"`. Sortie :
+**`/agent`** — entrée :
 ```json
-{ "situation": "…", "details": "…", "objectif": "C",
-  "travaux": [{ "titre": "…", "description": "…", "cout_min": 1500, "cout_max": 3000, "impact": "fort" }],
-  "aides": [{ "nom": "MaPrimeRénov'", "statut": "Sous conditions", "description": "…" }] }
+{ "classe_dpe": "D", "surface": 85, "annee_construction": 1948, "type_batiment": "maison",
+  "type_chauffage": "Fioul", "code_postal": "83600", "locale": "fr" }
 ```
-`impact` ∈ `fort`, `moyen`, `confort`.
+`annee_construction` est obligatoire : le site envoie l’année exacte si elle est connue, sinon la première année de la période (`anneeDebutPeriode`, `src/lib/logement.ts`). `type_chauffage` est un texte libre (le site envoie le libellé lisible). Sortie :
+```json
+{ "classe_dpe": "D", "recommandations": {
+  "situation": { "titre": "…", "icone": "…", "resume": "…", "detail": "…" },
+  "travaux":   { "titre": "…", "icone": "…", "resume": "…", "items": ["…", "…"] },
+  "aides":     { "titre": "…", "icone": "…", "resume": "…", "items": ["…", "…"] } } }
+```
+Textes générés, affichés tels quels (le site n’ajoute ni prix ni budget). Si la génération échoue, l’API renvoie `items: []` : le site affiche un message d’erreur.
 
-**`/chat`** — entrée : `{ "question": "…", "modele": "claude" | "mistral", "logement": {…} | null }`. Sortie :
-`{ "reponse": "Texte avec citations [1] [2]", "sources": [{ "titre": "…", "url": "…" }], "duree_ms": 2100, "tokens": 640 }`
+**`/chat`** — entrée : `{ "question": "…", "locale": "fr" }` (ni modèle ni logement). Sortie : `{ "question": "…", "reponse": "…", "sources": [{ "extrait": "150 premiers caractères…", "score": 0.82 }] }`.
 
-**`/feedback`** : `{ "juste": false, "classe_predite": "E", "classe_officielle": "D" }` · **`/vote`** : `{ "question": "…", "gagnant": "claude" }`
-
-Pense à autoriser l'origine du site dans le CORS de FastAPI.
+Pas de route `/feedback` ni `/vote` : le bloc de retour est masqué et « Comparer » est affiché désactivé (« bientôt »).
 
 ## Docker
 
@@ -78,6 +97,6 @@ public/images/       photos (crédits sur /credits)
 src/app/[locale]/    pages : accueil, simulateur, assistant, a-propos, contact, credits, mentions-legales, confidentialite
 src/app/api/contact  réception du formulaire
 src/components/      Header, Footer, HeroSlider, Reveal, result/*, assistant/Chat…
-src/lib/             api.ts (client API), dpe.ts (seuils 2026), demo.ts, logement.ts, site.ts
+src/lib/             api.ts (client API), dpe.ts (seuils 2026), demo.ts, logement.ts, criteres.ts, site.ts
 src/fonts/           polices auto-hébergées (aucun appel à Google Fonts)
 ```
