@@ -294,6 +294,7 @@ select.inp { appearance: none; padding-right: 44px; cursor: pointer; background-
 .chat-log { flex: 1; padding: 32px 28px; display: flex; flex-direction: column; gap: 22px; }
 .bubble-u { align-self: flex-end; max-width: 72%; padding: 14px 20px; border-radius: 22px 22px 6px 22px; background: var(--acc); color: var(--on-acc); font-size: 16px; line-height: 1.5; white-space: pre-wrap; }
 .bubble-a { align-self: flex-start; max-width: 86%; display: flex; gap: 14px; }
+.bubble-a.wide { align-self: stretch; max-width: 100%; }
 .bubble-a-body { padding: 22px 24px; border-radius: 6px 22px 22px 22px; background: var(--surf2); font-size: 16px; line-height: 1.65; white-space: pre-wrap; }
 .avatar { width: 40px; height: 40px; flex: none; border-radius: 12px; background: var(--bg-deep); border: 1px solid var(--line); color: var(--acc); display: flex; align-items: center; justify-content: center; }
 .cite { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; margin: 0 2px; border-radius: 6px; background: var(--acc); color: var(--on-acc); font-size: 11px; font-weight: 700; vertical-align: 2px; }
