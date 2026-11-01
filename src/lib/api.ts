@@ -1,19 +1,42 @@
-import type { ApiResult, Logement, Modele, PlanRenovation, Prediction, ReponseChat } from './types';
+import type { ApiResult, Importance, Logement, Prediction, Recommandations, ReponseChat } from './types';
 import type { DpeClass } from './dpe';
-import { demoChat, demoPlan, demoPrediction } from './demo';
+import { anneeDebutPeriode } from './logement';
+import { demoChat, demoRecommandations, demoPrediction } from './demo';
 
 /**
- * Client de l'API FastAPI d'EnergyHome AI.
- * Contrat attendu : voir README.md, section « Contrat d'API ». Adapte les chemins et les champs
- * ici, à un seul endroit, si ton API diffère.
+ * Client de l'API FastAPI d'EnergyHome AI (dépôt energyhome-api, branche v2).
+ * Le contrat est celui du code de l'API (`app/schemas/`, `app/api/`) ; il est résumé dans README.md.
+ *
+ * Mode démonstration : UNIQUEMENT quand l'API est injoignable (pas d'URL, erreur réseau, délai dépassé).
+ * Une réponse d'erreur de l'API (422, 500…) est remontée sous forme d'`ApiError`, jamais remplacée par une démo.
  */
 const API = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-const TIMEOUT_MS = 20000;
 
-async function call<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+/** Erreur renvoyée par l'API elle-même (elle a répondu, mais avec un code d'erreur). */
+export class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+/** Message lisible d'une erreur FastAPI : `detail` est une chaîne, ou une liste `{ msg }` pour une 422. */
+function messageErreur(body: unknown): string | null {
+  const detail = (body as { detail?: unknown } | null)?.detail;
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail)) {
+    const msgs = detail
+      .map((d) => (typeof d?.msg === 'string' ? d.msg.replace(/^Value error,\s*/, '') : null))
+      .filter((m): m is string => !!m);
+    return msgs.length ? msgs.join(' ') : null;
+  }
+  return null;
+}
+
+async function call<T>(path: string, body: unknown, timeoutMs: number, signal?: AbortSignal): Promise<T> {
   if (!API) throw new Error('NEXT_PUBLIC_API_URL non défini');
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   signal?.addEventListener('abort', () => ctrl.abort());
   try {
     const res = await fetch(`${API}${path}`, {
@@ -22,68 +45,83 @@ async function call<T>(path: string, body: unknown, signal?: AbortSignal): Promi
       body: JSON.stringify(body),
       signal: ctrl.signal,
     });
-    if (!res.ok) throw new Error(`API ${path} : ${res.status}`);
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      throw new ApiError(res.status, messageErreur(data) ?? `API ${path} : ${res.status}`);
+    }
     return (await res.json()) as T;
   } finally {
     clearTimeout(timer);
   }
 }
 
-function toApiLogement(l: Logement) {
-  return { surface: l.surface, periode: l.periode, type: l.type, chauffage: l.chauffage, code_postal: l.codePostal };
+/** Repli démo seulement si l'API n'a pas répondu ; sinon l'erreur est relancée. */
+function replier<T>(e: unknown, signal: AbortSignal | undefined, demo: () => T): ApiResult<T> {
+  if (signal?.aborted || e instanceof ApiError) throw e;
+  return { data: demo(), demo: true };
 }
 
 export async function predict(l: Logement, signal?: AbortSignal): Promise<ApiResult<Prediction>> {
+  // L'API exige exactement un des deux champs : periode ou annee_construction
+  const body = {
+    surface: l.surface,
+    type_batiment: l.type,
+    chauffage: l.chauffage,
+    code_postal: l.codePostal,
+    ...(l.annee != null ? { annee_construction: l.annee } : { periode: l.periode }),
+  };
   try {
     const r = await call<{
       classe: DpeClass;
       probabilites: Record<DpeClass, number>;
-      importances: { critere: string; valeur: string; poids: number }[];
-      model_version?: string;
-    }>('/predict', toApiLogement(l), signal);
-    return { data: { classe: r.classe, probabilites: r.probabilites, importances: r.importances, modelVersion: r.model_version }, demo: false };
+      importances?: Importance[];
+      model_version: string;
+    }>('/predict', body, 20000, signal);
+    return { data: { classe: r.classe, probabilites: r.probabilites, importances: r.importances ?? [], modelVersion: r.model_version }, demo: false };
   } catch (e) {
-    if (signal?.aborted) throw e;
-    return { data: demoPrediction(l), demo: true };
+    return replier(e, signal, () => demoPrediction(l));
   }
 }
 
-export async function renovationPlan(l: Logement, classe: DpeClass, signal?: AbortSignal): Promise<ApiResult<PlanRenovation>> {
+type BlocApi = { resume?: string; detail?: string; items?: unknown[] };
+
+/**
+ * Recommandations de l'agent (`POST /agent`). `libelleChauffage` est un libellé lisible : l'API l'insère tel quel
+ * dans le texte envoyé au modèle de langage. L'année exacte est envoyée si connue, sinon le début de la période.
+ */
+export async function recommandations(
+  l: Logement, classe: DpeClass, locale: string, libelleChauffage: string, signal?: AbortSignal,
+): Promise<ApiResult<Recommandations>> {
   try {
-    const r = await call<{
-      situation: string; details: string; objectif: DpeClass;
-      travaux: { titre: string; description: string; cout_min: number; cout_max: number; impact: 'fort' | 'moyen' | 'confort' }[];
-      aides: { nom: string; statut: string; description: string }[];
-    }>('/agent/plan', { ...toApiLogement(l), classe }, signal);
+    const r = await call<{ recommandations: { situation?: BlocApi; travaux?: BlocApi; aides?: BlocApi } }>('/agent', {
+      classe_dpe: classe,
+      surface: l.surface,
+      annee_construction: l.annee ?? anneeDebutPeriode(l.periode),
+      type_batiment: l.type,
+      type_chauffage: libelleChauffage,
+      code_postal: l.codePostal,
+      locale,
+    }, 60000, signal);
+    const rec = r.recommandations ?? {};
+    const items = (b?: BlocApi) => (b?.items ?? []).filter((x): x is string => typeof x === 'string' && x.trim() !== '');
     return {
       data: {
-        situation: r.situation, details: r.details, objectif: r.objectif, aides: r.aides,
-        travaux: r.travaux.map((t) => ({ titre: t.titre, description: t.description, coutMin: t.cout_min, coutMax: t.cout_max, impact: t.impact })),
+        situation: { resume: rec.situation?.resume ?? '', detail: rec.situation?.detail ?? '' },
+        travaux: { resume: rec.travaux?.resume ?? '', items: items(rec.travaux) },
+        aides: { resume: rec.aides?.resume ?? '', items: items(rec.aides) },
       },
       demo: false,
     };
   } catch (e) {
-    if (signal?.aborted) throw e;
-    return { data: demoPlan(classe), demo: true };
+    return replier(e, signal, () => demoRecommandations(classe));
   }
 }
 
-export async function chat(question: string, modele: Modele, logement?: Logement, signal?: AbortSignal): Promise<ApiResult<ReponseChat>> {
+export async function chat(question: string, locale: string, signal?: AbortSignal): Promise<ApiResult<ReponseChat>> {
   try {
-    const r = await call<{ reponse: string; sources: { titre: string; url?: string }[]; duree_ms?: number; tokens?: number }>(
-      '/chat', { question, modele, logement: logement ? toApiLogement(logement) : null }, signal,
-    );
-    return { data: { texte: r.reponse, sources: r.sources ?? [], dureeMs: r.duree_ms, tokens: r.tokens }, demo: false };
+    const r = await call<{ reponse: string; sources?: { extrait: string; score: number }[] }>('/chat', { question, locale }, 60000, signal);
+    return { data: { texte: r.reponse, sources: r.sources ?? [] }, demo: false };
   } catch (e) {
-    if (signal?.aborted) throw e;
-    return { data: demoChat(question, modele), demo: true };
+    return replier(e, signal, () => demoChat(question));
   }
-}
-
-/** Retours et votes : envoyés au mieux, sans bloquer l'interface. */
-export async function sendFeedback(payload: { juste: boolean; classePredite: DpeClass; classeOfficielle?: DpeClass }) {
-  try { await call('/feedback', { juste: payload.juste, classe_predite: payload.classePredite, classe_officielle: payload.classeOfficielle ?? null }); } catch { /* sans effet pour l'utilisateur */ }
-}
-export async function sendVote(question: string, gagnant: Modele) {
-  try { await call('/vote', { question, gagnant }); } catch { /* sans effet pour l'utilisateur */ }
 }

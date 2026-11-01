@@ -3,49 +3,70 @@
 import { Fragment, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { chat, sendVote } from '@/lib/api';
+import { chat } from '@/lib/api';
 import { toSearchParams } from '@/lib/logement';
-import type { Logement, Modele, ReponseChat } from '@/lib/types';
+import type { Logement, ReponseChat } from '@/lib/types';
 import { LogoMark } from '../Logo';
-import { ArrowUpRight, Doc, Info } from '../Icons';
+import { ArrowUpRight, Info } from '../Icons';
 
-type Mode = Modele | 'comparer';
-type Answer = { modele: Modele; rep: ReponseChat; demo: boolean };
-type Turn = { id: number; question: string; answers: Answer[] | null; voted?: Modele };
+type Answer = { rep: ReponseChat; demo: boolean };
+type Turn = { id: number; question: string; answer: Answer | null; error?: boolean };
 
-/** Remplace les marqueurs [1], [2]… par des pastilles de citation. */
-function withCitations(text: string): ReactNode {
-  return text.split(/(\[\d+\])/g).map((part, k) => {
-    const m = /^\[(\d+)\]$/.exec(part);
-    return m ? <span key={k} className="cite">{m[1]}</span> : <Fragment key={k}>{part}</Fragment>;
+/** Gras **…** en ligne. */
+function inline(text: string): ReactNode {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, k) => {
+    const m = /^\*\*([^*]+)\*\*$/.exec(part);
+    return m ? <strong key={k}>{m[1]}</strong> : <Fragment key={k}>{part}</Fragment>;
   });
 }
 
+/** Mise en forme minimale de la réponse générée : paragraphes, puces (« - », « * », « • »), titres « # » et gras. */
+function Formatted({ text }: { text: string }) {
+  const blocks = text.trim().split(/\n\s*\n/);
+  return (
+    <div className="answer">
+      {blocks.map((b, k) => {
+        const lines = b.split('\n').map((l) => l.trim()).filter(Boolean);
+        if (lines.length > 0 && lines.every((l) => /^[-*•]\s+/.test(l))) {
+          return <ul key={k}>{lines.map((l, i) => <li key={i}>{inline(l.replace(/^[-*•]\s+/, ''))}</li>)}</ul>;
+        }
+        return (
+          <p key={k}>
+            {lines.map((l, i) => (
+              <Fragment key={i}>{i > 0 && <br />}{inline(l.replace(/^#+\s+/, ''))}</Fragment>
+            ))}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Réponse et extraits utilisés, tels que renvoyés par l'API (aucun titre ni lien ajouté). */
 function AnswerBody({ a, t, locale }: { a: Answer; t: ReturnType<typeof useTranslations>; locale: string }) {
   return (
     <>
       {a.demo && <p className="notice" style={{ marginBottom: 14, fontSize: 13 }}><Info size={16} />{t('demo')}</p>}
-      <div>{withCitations(a.rep.texte)}</div>
+      <Formatted text={a.rep.texte} />
       {a.rep.sources.length > 0 && (
         <div className="sources">
           <p className="kick muted" style={{ fontSize: 11 }}>{t('sources')}</p>
-          <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {a.rep.sources.map((s, k) =>
-              s.url ? (
-                <a key={k} className="src lk" href={s.url} target="_blank" rel="noopener noreferrer"><span className="cite">{k + 1}</span>{s.titre}<ArrowUpRight size={12} /></a>
-              ) : (
-                <span key={k} className="src"><span className="cite">{k + 1}</span><Doc />{s.titre}</span>
-              ),
-            )}
-          </div>
+          <ol className="excerpts">
+            {a.rep.sources.map((src, k) => (
+              <li key={k} className="excerpt">
+                <span className="cite" aria-hidden="true">{k + 1}</span>
+                <span>
+                  {src.extrait}
+                  {!a.demo && (
+                    <span className="mono" style={{ display: 'block', marginTop: 4, fontSize: 11 }}>
+                      {t('score', { s: new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(src.score) })}
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
-      )}
-      {(a.rep.dureeMs != null || a.rep.tokens != null) && (
-        <dl className="metrics">
-          {a.rep.dureeMs != null && <div><dt>{t('time')}</dt><dd>{new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(a.rep.dureeMs / 1000)} s</dd></div>}
-          {a.rep.tokens != null && <div><dt>{t('tokens')}</dt><dd>{new Intl.NumberFormat(locale).format(a.rep.tokens)}</dd></div>}
-          <div><dt>{t('sources')}</dt><dd>{a.rep.sources.length}</dd></div>
-        </dl>
       )}
     </>
   );
@@ -55,14 +76,13 @@ export function Chat({ logement, initialQuestion }: { logement: Logement | null;
   const t = useTranslations('assistant');
   const s = useTranslations('home.sim');
   const locale = useLocale();
-  const [mode, setMode] = useState<Mode>('claude');
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState(initialQuestion ?? '');
   const [phase, setPhase] = useState(0);
   const ctrl = useRef<AbortController | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const nextId = useRef(1);
-  const busy = turns.some((x) => x.answers === null);
+  const busy = turns.some((x) => x.answer === null && !x.error);
 
   useEffect(() => () => ctrl.current?.abort(), []);
   useEffect(() => {
@@ -79,24 +99,20 @@ export function Chat({ logement, initialQuestion }: { logement: Logement | null;
     const q = question.trim();
     if (!q || busy) return;
     const id = nextId.current++;
-    setTurns((ts) => [...ts, { id, question: q, answers: null }]);
+    setTurns((ts) => [...ts, { id, question: q, answer: null }]);
     setInput('');
-    ctrl.current = new AbortController();
-    const models: Modele[] = mode === 'comparer' ? ['claude', 'mistral'] : [mode];
+    const signal = (ctrl.current = new AbortController()).signal;
     try {
-      const res = await Promise.all(models.map((m) => chat(q, m, logement ?? undefined, ctrl.current!.signal)));
-      const answers = res.map((r, k) => ({ modele: models[k], rep: r.data, demo: r.demo }));
-      setTurns((ts) => ts.map((x) => (x.id === id ? { ...x, answers } : x)));
+      const r = await chat(q, locale, signal);
+      setTurns((ts) => ts.map((x) => (x.id === id ? { ...x, answer: { rep: r.data, demo: r.demo } } : x)));
     } catch {
-      setTurns((ts) => ts.filter((x) => x.id !== id)); // arrêt demandé par l'utilisateur
-      setInput(q);
+      if (signal.aborted) {
+        setTurns((ts) => ts.filter((x) => x.id !== id)); // arrêt demandé par l’utilisateur
+        setInput(q);
+      } else {
+        setTurns((ts) => ts.map((x) => (x.id === id ? { ...x, error: true } : x))); // erreur renvoyée par l’API
+      }
     }
-  };
-
-  const vote = (turn: Turn, m: Modele) => {
-    if (turn.voted) return;
-    setTurns((ts) => ts.map((x) => (x.id === turn.id ? { ...x, voted: m } : x)));
-    void sendVote(turn.question, m);
   };
 
   const submit = (e: FormEvent) => { e.preventDefault(); void ask(input); };
@@ -116,7 +132,7 @@ export function Chat({ logement, initialQuestion }: { logement: Logement | null;
           {logement ? (
             <>
               <div className="chips" style={{ marginTop: 16 }}>
-                {[t(`types.${logement.type}`), `${logement.surface} m²`, s(`periodes.${logement.periode}`), s(`chauffages.${logement.chauffage}`), logement.codePostal].map((c) => <span key={c} className="chip">{c}</span>)}
+                {[t(`types.${logement.type}`), `${logement.surface} m²`, logement.annee != null ? String(logement.annee) : s(`periodes.${logement.periode}`), s(`chauffages.${logement.chauffage}`), logement.codePostal].map((c) => <span key={c} className="chip">{c}</span>)}
               </div>
               <p className="small" style={{ marginTop: 14, fontSize: 13 }}>{t('homeHelp')}</p>
             </>
@@ -147,10 +163,10 @@ export function Chat({ logement, initialQuestion }: { logement: Logement | null;
               <p className="small" style={{ fontSize: 12.5, display: 'flex', alignItems: 'center', gap: 8 }}><span className="dot" />{t('status')}</p>
             </div>
           </div>
+          {/* L'API ne propose qu'un modèle : la comparaison est annoncée, pas simulée. */}
           <div className="seg" role="group" aria-label={t('modelGroup')}>
-            {(['claude', 'mistral', 'comparer'] as const).map((m) => (
-              <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)} disabled={busy}>{t(`modes.${m}`)}</button>
-            ))}
+            <button type="button" aria-pressed="true">{t('modes.claude')}</button>
+            <button type="button" disabled aria-disabled="true">{t('modes.comparer')} · {t('modes.soon')}</button>
           </div>
         </div>
 
@@ -163,40 +179,21 @@ export function Chat({ logement, initialQuestion }: { logement: Logement | null;
           {turns.map((turn) => (
             <Fragment key={turn.id}>
               <div className="bubble-u">{turn.question}</div>
-              {turn.answers === null ? (
-                <div className="bubble-a" role="status">
-                  <span className="avatar" aria-hidden="true"><LogoMark size={26} still /></span>
+              <div className="bubble-a" role={turn.answer === null && !turn.error ? 'status' : undefined}>
+                <span className="avatar" aria-hidden="true"><LogoMark size={26} still /></span>
+                {turn.error ? (
+                  <div className="bubble-a-body"><p className="notice" style={{ margin: 0 }}><Info size={16} />{t('error')}</p></div>
+                ) : turn.answer === null ? (
                   <div className="bubble-a-body" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span className="spin" />
                     <span><span className="sr-only">{t('preparing')} : </span>{phases[phase]}…</span>
                   </div>
-                </div>
-              ) : turn.answers.length === 1 ? (
-                <div className="bubble-a">
-                  <span className="avatar" aria-hidden="true"><LogoMark size={26} still /></span>
+                ) : (
                   <div className="bubble-a-body">
-                    <p className="kick muted" style={{ fontSize: 11, marginBottom: 10 }}>{t(`modes.${turn.answers[0].modele}`)}</p>
-                    <AnswerBody a={turn.answers[0]} t={t} locale={locale} />
+                    <AnswerBody a={turn.answer} t={t} locale={locale} />
                   </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="compare">
-                    {turn.answers.map((a) => (
-                      <div key={a.modele} className={turn.voted === a.modele ? 'model-card voted' : 'model-card'} style={{ whiteSpace: 'pre-wrap', lineHeight: 1.65 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, whiteSpace: 'normal' }}>
-                          <p className="h3" style={{ fontSize: 20 }}>{t(`modes.${a.modele}`)}</p>
-                          <button type="button" className="btn-o btn-sm" aria-pressed={turn.voted === a.modele} disabled={!!turn.voted && turn.voted !== a.modele} onClick={() => vote(turn, a.modele)}>
-                            {turn.voted === a.modele ? t('voted') : t('vote')}
-                          </button>
-                        </div>
-                        <AnswerBody a={a} t={t} locale={locale} />
-                      </div>
-                    ))}
-                  </div>
-                  <p className="small" style={{ marginTop: 12, fontSize: 12.5 }}>{t('compareNote')}</p>
-                </div>
-              )}
+                )}
+              </div>
             </Fragment>
           ))}
         </div>

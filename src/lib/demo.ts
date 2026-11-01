@@ -1,14 +1,15 @@
-import type { Logement, PlanRenovation, Prediction, ReponseChat, Modele } from './types';
+import type { Logement, Prediction, Recommandations, ReponseChat } from './types';
 import { CLASSES, type DpeClass } from './dpe';
+import { PERIODES } from './logement';
 
 /**
  * Données de démonstration, affichées UNIQUEMENT quand l'API est injoignable.
  * L'interface le signale toujours à l'utilisateur : ce ne sont pas des résultats réels.
  */
 export function demoPrediction(l: Logement): Prediction {
-  const base: Record<string, number> = { 'avant-1948': 5, '1948-1974': 5, '1975-1988': 4, '1989-2005': 3, 'apres-2005': 2 };
-  let idx = base[l.periode] ?? 4;
-  if (l.chauffage === 'pac' || l.chauffage === 'bois') idx -= 1;
+  const rang = PERIODES.indexOf(l.periode); // 0 (avant 1948) … 9 (après 2021)
+  let idx = rang <= 1 ? 5 : rang <= 4 ? 4 : rang <= 6 ? 3 : 2;
+  if (l.chauffage.startsWith('bois')) idx -= 1;
   if (l.chauffage === 'fioul') idx += 1;
   if (l.surface < 40) idx += 1;
   idx = Math.max(0, Math.min(6, idx));
@@ -16,47 +17,41 @@ export function demoPrediction(l: Logement): Prediction {
   const raw = CLASSES.map((_, i) => w[Math.abs(i - idx)]);
   const tot = raw.reduce((a, b) => a + b, 0);
   const probabilites = Object.fromEntries(CLASSES.map((c, i) => [c, raw[i] / tot])) as Record<DpeClass, number>;
+  // Mêmes libellés de critères que l'API ; poids d'exemple, somme = 1
   return {
     classe: CLASSES[idx],
     probabilites,
     importances: [
-      { critere: 'periode', valeur: l.periode, poids: 0.88 },
-      { critere: 'chauffage', valeur: l.chauffage, poids: 0.76 },
-      { critere: 'surface', valeur: `${l.surface} m²`, poids: 0.44 },
-      { critere: 'localisation', valeur: l.codePostal, poids: 0.18 },
+      { critere: 'Période de construction', valeur: l.periode, poids: 0.4 },
+      { critere: 'Énergie de chauffage', valeur: l.chauffage, poids: 0.3 },
+      { critere: 'Surface', valeur: l.surface, poids: 0.15 },
+      { critere: 'Type de bâtiment', valeur: l.type, poids: 0.1 },
+      { critere: 'Département', valeur: l.codePostal.slice(0, 2), poids: 0.05 },
     ],
     modelVersion: 'demo',
   };
 }
 
-export function demoPlan(classe: DpeClass): PlanRenovation {
-  const objectif = CLASSES[Math.max(0, CLASSES.indexOf(classe) - 2)];
+export function demoRecommandations(classe: DpeClass): Recommandations {
   return {
-    situation: `Logement estimé en classe ${classe}.`,
-    details: "Gagner deux classes ouvre droit à MaPrimeRénov' rénovation d'ampleur, sous conditions.",
-    objectif,
-    travaux: [
-      { titre: 'Combles et toiture', description: 'Souvent le premier poste de déperdition', coutMin: 1500, coutMax: 3000, impact: 'fort' },
-      { titre: 'Pompe à chaleur', description: 'Remplace les radiateurs électriques anciens', coutMin: 8000, coutMax: 12000, impact: 'fort' },
-      { titre: 'Panneaux photovoltaïques', description: 'Bon ensoleillement dans le Var', coutMin: 6000, coutMax: 10000, impact: 'moyen' },
-      { titre: 'Fenêtres double vitrage', description: 'Améliore surtout le confort', coutMin: 5000, coutMax: 8000, impact: 'confort' },
-    ],
-    aides: [
-      { nom: "MaPrimeRénov' d'ampleur", statut: 'Sous conditions', description: "Gain de 2 classes minimum, Mon Accompagnateur Rénov' obligatoire, taux selon revenus" },
-      { nom: "MaPrimeRénov' par geste", statut: 'Selon revenus', description: 'Ménages modestes et très modestes' },
-      { nom: 'Primes CEE', statut: 'Possible', description: "Non cumulables avec la rénovation d'ampleur" },
-      { nom: 'Éco-PTZ', statut: 'Éligible', description: "Jusqu'à 50 000 € sans intérêts, sans condition de revenus" },
-      { nom: 'TVA à 5,5 %', statut: 'Applicable', description: "Logement de plus de 2 ans, appliquée par l'artisan" },
-    ],
+    situation: {
+      resume: `Exemple de démonstration pour un logement estimé en classe ${classe}.`,
+      detail: 'Ici s’affichera l’analyse de l’agent : implications réglementaires et financières pour ce logement.',
+    },
+    travaux: {
+      resume: 'Exemple : les travaux prioritaires proposés par l’agent.',
+      items: ['[Travaux proposés par l’agent 1]', '[Travaux proposés par l’agent 2]'],
+    },
+    aides: {
+      resume: 'Exemple : les aides mentionnées par l’agent.',
+      items: ['[Aide mentionnée par l’agent 1]', '[Aide mentionnée par l’agent 2]'],
+    },
   };
 }
 
-export function demoChat(question: string, modele: Modele): ReponseChat {
+export function demoChat(question: string): ReponseChat {
   return {
-    texte:
-      modele === 'claude'
-        ? `Réponse de démonstration (API indisponible) à : « ${question} ». Ici s'affichera la réponse de Claude, avec ses citations [1] renvoyant aux passages récupérés [2].`
-        : `Réponse de démonstration (API indisponible) à : « ${question} ». Mêmes passages récupérés, seul le modèle qui rédige change.`,
-    sources: [{ titre: '[Document source 1]' }, { titre: '[Document source 2]' }],
+    texte: `Réponse de démonstration (API indisponible) à : « ${question} ». Ici s’affichera la réponse rédigée à partir des passages récupérés.`,
+    sources: [{ extrait: '[Extrait de document 1]', score: 0 }, { extrait: '[Extrait de document 2]', score: 0 }],
   };
 }

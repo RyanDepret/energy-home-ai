@@ -1,37 +1,44 @@
 import type { DpeClass } from './dpe';
 
-export type Periode = 'avant-1948' | '1948-1974' | '1975-1988' | '1989-2005' | 'apres-2005';
+/** Codes de l'API v2 (`app/schemas/predict.py` de energyhome-api) : ne pas les renommer. */
+export type Periode =
+  | 'avant_1948' | '1948_1974' | '1975_1977' | '1978_1982' | '1983_1988'
+  | '1989_2000' | '2001_2005' | '2006_2012' | '2013_2021' | 'apres_2021';
 export type TypeLogement = 'maison' | 'appartement';
-export type Chauffage = 'electricite' | 'gaz' | 'fioul' | 'bois' | 'pac' | 'reseau';
+export type Chauffage =
+  | 'electricite' | 'electricite_renouvelable' | 'gaz_naturel' | 'fioul' | 'gpl'
+  | 'propane' | 'bois_buches' | 'bois_granules' | 'bois_plaquettes' | 'reseau_chaleur';
 
 export interface Logement {
   surface: number;
+  /** Période ADEME ; si `annee` est renseignée, c'est la période de cette année. */
   periode: Periode;
+  /** Année exacte de construction, facultative. */
+  annee?: number;
   type: TypeLogement;
   chauffage: Chauffage;
   codePostal: string;
 }
 
+export interface Importance { critere: string; valeur: unknown; poids: number }
+
 export interface Prediction {
   classe: DpeClass;
   probabilites: Record<DpeClass, number>;
-  importances: { critere: string; valeur: string; poids: number }[];
+  importances: Importance[];
   modelVersion?: string;
 }
 
-export interface Travail { titre: string; description: string; coutMin: number; coutMax: number; impact: 'fort' | 'moyen' | 'confort' }
-export interface Aide { nom: string; statut: string; description: string }
-export interface PlanRenovation {
-  situation: string;
-  details: string;
-  objectif: DpeClass;
-  travaux: Travail[];
-  aides: Aide[];
+/** Réponse de `POST /agent` : textes générés, items en texte libre. */
+export interface Recommandations {
+  situation: { resume: string; detail: string };
+  travaux: { resume: string; items: string[] };
+  aides: { resume: string; items: string[] };
 }
 
-export type Modele = 'claude' | 'mistral';
-export interface Source { titre: string; url?: string }
-export interface ReponseChat { texte: string; sources: Source[]; dureeMs?: number; tokens?: number }
+/** Source renvoyée par `POST /chat` : un extrait du document et son score de similarité. */
+export interface Source { extrait: string; score: number }
+export interface ReponseChat { texte: string; sources: Source[] }
 
 /** Résultat d'un appel : `demo` vaut true quand l'API est injoignable et que des données d'exemple sont affichées. */
 export interface ApiResult<T> { data: T; demo: boolean }

@@ -186,7 +186,7 @@
     "sim": {
       "kick": "(03) — Simulateur",
       "title": "Cinq infos.<br></br><acc>Une minute.</acc>",
-      "lead": "Le modèle compare votre logement à des milliers de DPE publics similaires, puis vous montre sa classe la plus probable et ce qui a pesé dans le calcul.",
+      "lead": "Le modèle a appris sur les DPE publics de l’ADEME en région PACA. Il vous montre la classe la plus probable de votre logement et ce qui a pesé dans le calcul.",
       "scale": "Échelle DPE de A à G",
       "card": "Simuler mon DPE",
       "duration": "≈ 1 MIN",
@@ -195,12 +195,21 @@
       "surfaceError": "Indiquez une surface entre 9 et 1 000 m².",
       "periode": "Période de construction",
       "periodes": {
-        "avant-1948": "Avant 1948",
-        "1948-1974": "1948–1974",
-        "1975-1988": "1975–1988",
-        "1989-2005": "1989–2005",
-        "apres-2005": "Après 2005"
+        "avant_1948": "Avant 1948",
+        "1948_1974": "1948–1974",
+        "1975_1977": "1975–1977",
+        "1978_1982": "1978–1982",
+        "1983_1988": "1983–1988",
+        "1989_2000": "1989–2000",
+        "2001_2005": "2001–2005",
+        "2006_2012": "2006–2012",
+        "2013_2021": "2013–2021",
+        "apres_2021": "Après 2021"
       },
+      "annee": "Année exacte (facultatif)",
+      "anneePh": "ex. 1968",
+      "anneeHelp": "Si vous la connaissez, elle remplace la période.",
+      "anneeError": "Indiquez une année entre 1800 et l’année en cours, ou laissez vide.",
       "type": "Type",
       "types": {
         "maison": "Maison",
@@ -209,12 +218,17 @@
       "chauffage": "Chauffage",
       "chauffages": {
         "electricite": "Électricité",
-        "gaz": "Gaz naturel",
+        "electricite_renouvelable": "Électricité renouvelable produite sur place",
+        "gaz_naturel": "Gaz naturel",
         "fioul": "Fioul",
-        "bois": "Bois",
-        "pac": "Pompe à chaleur",
-        "reseau": "Réseau de chaleur"
+        "gpl": "GPL",
+        "propane": "Propane",
+        "bois_buches": "Bois (bûches)",
+        "bois_granules": "Bois (granulés)",
+        "bois_plaquettes": "Bois (plaquettes)",
+        "reseau_chaleur": "Réseau de chaleur"
       },
+      "chauffageHelp": "Énergie principale de chauffage. Pompe à chaleur : choisissez « Électricité ».",
       "cp": "Code postal",
       "cpPh": "ex. 83600",
       "cpHelp": "Départements de la région PACA uniquement.",
@@ -261,6 +275,9 @@
     "invalidText": "Lancez une simulation depuis l’accueil pour obtenir votre estimation.",
     "invalidCta": "Faire une simulation",
     "demo": "Mode démonstration : l’API est injoignable, les chiffres affichés sont des exemples, pas une estimation de votre logement.",
+    "lt1": "< 1 %",
+    "error": "L’estimation n’a pas pu être calculée.",
+    "errorEdit": "Modifier mes informations",
     "chips": "{type} · {surface} m² · {periode} · {chauffage} · {cp}",
     "estimated": "Classe estimée",
     "classLabel": "Classe {classe} · {label}",
@@ -306,39 +323,27 @@
       "valueTitle": "La classe pèse sur le prix",
       "valueText": "Le DPE figure dans toute annonce de vente ou de location. Une meilleure classe rassure les acheteurs et les locataires.",
       "nextKick": "Prochaine étape",
-      "nextTitle": "Un plan de travaux chiffré",
+      "nextTitle": "Des pistes de travaux",
       "nextText": "L’agent IA ci-dessous propose les travaux prioritaires et les aides auxquelles vous pourriez prétendre."
     },
     "agent": {
       "kick": "(02) — Agent IA",
       "title": "Votre plan <acc>de rénovation.</acc>",
-      "lead": "L’agent analyse votre logement, propose des travaux chiffrés et vérifie les aides auxquelles vous pouvez prétendre.",
+      "lead": "L’agent analyse votre logement à partir de documents de référence, puis propose des travaux prioritaires et les aides à étudier.",
       "run": "Obtenir des recommandations",
       "rerun": "Régénérer",
       "idle": "Lancez l’agent pour obtenir un plan adapté à votre logement. L’analyse prend une dizaine de secondes.",
       "steps": [
         "Analyse de votre logement",
-        "Recherche des travaux adaptés",
-        "Vérification des aides 2026"
+        "Recherche dans les documents de référence",
+        "Rédaction des recommandations"
       ],
       "current": "Classe actuelle",
       "rentalUntil": "Location",
-      "goal": "Objectif conseillé",
-      "goalText": "Gagner des classes ouvre droit à plus d’aides",
-      "budget": "Budget estimé",
-      "budgetText": "Pour l’ensemble des travaux, avant aides",
       "situation": "Situation actuelle",
       "works": "Travaux prioritaires",
-      "byImpact": "Par ordre d’impact",
-      "cost": "Coût estimé",
-      "impact": {
-        "fort": "Gain fort",
-        "moyen": "Gain moyen",
-        "confort": "Confort"
-      },
       "aids": "Aides disponibles",
-      "rules": "Règles 2026",
-      "note": "Montants indicatifs générés par l’agent. Règles des aides 2026 d’après le guide de l’Anah, à confirmer avec un conseiller France Rénov’.",
+      "note": "Textes générés par IA (Claude Haiku). Les montants éventuellement cités sont indicatifs : à confirmer avec un conseiller France Rénov’.",
       "error": "L’agent n’a pas pu répondre. Réessayez dans un instant."
     },
     "transp": {
@@ -349,26 +354,15 @@
       "source": "Source officielle",
       "probaTitle": "Probabilité par classe",
       "weightTitle": "Ce qui a le plus pesé",
-      "weightLead": "Influence de chaque information sur l’estimation.",
+      "weightLead": "Part de chaque information dans cette estimation (le total fait 100 %).",
       "criteria": {
-        "periode": "Période de construction",
-        "chauffage": "Énergie de chauffage",
         "surface": "Surface",
-        "localisation": "Localisation",
-        "type": "Type de logement"
+        "periode": "Période de construction",
+        "type_batiment": "Type de bâtiment",
+        "chauffage": "Énergie de chauffage",
+        "departement": "Département",
+        "zone_climatique": "Zone climatique"
       },
-      "levels": {
-        "high": "forte",
-        "mid": "moyenne",
-        "low": "faible"
-      },
-      "fbQuestion": "Cette estimation vous semble-t-elle juste ?",
-      "yes": "Oui",
-      "no": "Non, j’ai mon DPE officiel",
-      "official": "Classe de votre DPE officiel",
-      "send": "Envoyer",
-      "thanks": "Merci, votre retour aide à améliorer les estimations.",
-      "anon": "Ces retours anonymes servent à améliorer le modèle.",
       "version": "Version du modèle : {v}"
     },
     "ask": {
@@ -390,43 +384,38 @@
     "home": "Votre logement",
     "edit": "Modifier",
     "homeNone": "Aucune simulation pour l’instant. L’assistant répondra de façon générale.",
-    "homeHelp": "L’assistant utilise ces informations pour personnaliser ses réponses.",
+    "homeHelp": "L’assistant ne reçoit pas encore ces informations : il répond de façon générale.",
     "how": "Comment ça marche",
     "howSteps": [
       {
         "t": "Recherche",
-        "d": "Sentence Transformers trouve les passages proches"
+        "d": "Les embeddings Mistral trouvent les passages proches de votre question"
       },
       {
         "t": "Contexte",
-        "d": "Les passages et votre logement sont transmis au modèle"
+        "d": "Les passages retenus sont transmis au modèle"
       },
       {
         "t": "Rédaction",
-        "d": "Claude ou Mistral répond en citant ses sources"
+        "d": "Claude Haiku répond à partir de ces passages"
       }
     ],
     "name": "Assistant EnergyHome",
     "status": "Répond à partir d’une base documentaire",
     "modelGroup": "Modèle de langage",
     "modes": {
-      "claude": "Claude",
-      "mistral": "Mistral",
-      "comparer": "Comparer"
+      "claude": "Claude Haiku",
+      "comparer": "Comparer",
+      "soon": "bientôt"
     },
-    "welcome": "Bonjour ! Posez-moi une question sur la rénovation énergétique, le DPE ou les aides. Je réponds en citant mes sources.",
+    "welcome": "Bonjour ! Posez-moi une question sur la rénovation énergétique, le DPE ou les aides. Je réponds à partir de documents de référence et je montre les extraits utilisés.",
     "preparing": "L’assistant prépare sa réponse",
     "phases": [
       "Recherche dans la base documentaire",
       "Sélection des passages pertinents",
       "Rédaction de la réponse"
     ],
-    "sources": "Sources",
-    "time": "Temps",
-    "tokens": "Jetons",
-    "vote": "Réponse la plus utile",
-    "voted": "Votre choix ✓",
-    "compareNote": "Même question, mêmes documents : seul le modèle change. Chaque vote alimente l’évaluation des deux modèles.",
+    "sources": "Extraits utilisés",
     "suggestions": [
       "Combien coûte une isolation des combles ?",
       "Qu’est-ce qu’un audit énergétique ?",
@@ -441,7 +430,9 @@
     "types": {
       "maison": "Maison",
       "appartement": "Appartement"
-    }
+    },
+    "score": "similarité {s}",
+    "error": "L’assistant n’a pas pu répondre. Réessayez dans un instant."
   },
   "about": {
     "kick": "À propos",

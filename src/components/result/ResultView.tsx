@@ -4,9 +4,9 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { predict } from '@/lib/api';
+import { ApiError, predict } from '@/lib/api';
 import { CLASSES, RANGES, runnerUp, rentalKey, type DpeClass } from '@/lib/dpe';
-import { percent } from '@/lib/format';
+import { pct } from '@/lib/format';
 import { toSearchParams } from '@/lib/logement';
 import { rich } from '@/lib/rich';
 import type { Logement, Prediction } from '@/lib/types';
@@ -23,18 +23,23 @@ export function ResultView({ logement }: { logement: Logement }) {
   const [pred, setPred] = useState<Prediction | null>(null);
   const [demo, setDemo] = useState(false);
   const [selected, setSelected] = useState<DpeClass | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
     setPred(null);
+    setError(null);
     predict(logement, ctrl.signal)
       .then((r) => { setPred(r.data); setDemo(r.demo); })
-      .catch(() => { /* requête annulée */ });
+      .catch((e: unknown) => {
+        // Erreur renvoyée par l’API (422 : données refusées) : on affiche son message, pas le mode démo
+        if (e instanceof ApiError) setError(e.message);
+      });
     return () => ctrl.abort();
   }, [logement]);
 
   const chips = t('chips', {
-    type: s(`types.${logement.type}`), surface: logement.surface, periode: s(`periodes.${logement.periode}`),
+    type: s(`types.${logement.type}`), surface: logement.surface, periode: logement.annee != null ? String(logement.annee) : s(`periodes.${logement.periode}`),
     chauffage: s(`chauffages.${logement.chauffage}`), cp: logement.codePostal,
   }).split(' · ');
 
@@ -59,13 +64,19 @@ export function ResultView({ logement }: { logement: Logement }) {
           </Link>
           <p className="kick fade" style={{ color: '#fff' }}>{t('kick')}</p>
           <h1 className="disp band-title" aria-live="polite">
-            <span className="ln"><span key={classe ?? 'load'}>{classe ? t.rich('title', { ...rich, classe }) : t('loadingTitle')}</span></span>
+            <span className="ln"><span key={classe ?? 'load'}>{classe ? t.rich('title', { ...rich, classe }) : error ? t('error') : t('loadingTitle')}</span></span>
           </h1>
           <div className="chips fade" style={{ marginTop: 28 }}>
             {chips.map((c) => <span key={c} className="chip-glass">{c}</span>)}
           </div>
         </div>
       </section>
+
+      {error && (
+        <div className="wrap" style={{ marginTop: 32 }}>
+          <p className="notice" role="alert"><Info /><span>{error}{' '}<Link href={{ pathname: '/simulateur', query: { edit: '1', ...Object.fromEntries(new URLSearchParams(qs)) } }} className="lk" style={{ fontWeight: 600 }}>{t('errorEdit')}</Link></span></p>
+        </div>
+      )}
 
       {demo && (
         <div className="wrap" style={{ marginTop: 32 }}>
@@ -88,7 +99,7 @@ export function ResultView({ logement }: { logement: Logement }) {
                 <div style={{ marginTop: 24 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
                     <span>{t('probability')}</span>
-                    <strong className="mono">{percent(pred.probabilites[classe] ?? 0, locale)}</strong>
+                    <strong className="mono">{pct(pred.probabilites[classe] ?? 0, locale, t('lt1'))}</strong>
                   </div>
                   <div className="meter"><i style={{ width: `${Math.round((pred.probabilites[classe] ?? 0) * 100)}%` }} /></div>
                   {second && (
@@ -99,7 +110,7 @@ export function ResultView({ logement }: { logement: Logement }) {
                   )}
                 </div>
               </>
-            ) : (
+            ) : error ? null : (
               <div aria-hidden="true">
                 <div className="skel class-tile" />
                 <div className="skel" style={{ marginTop: 24, height: 28, width: '70%' }} />

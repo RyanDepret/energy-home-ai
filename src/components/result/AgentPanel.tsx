@@ -2,30 +2,34 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { renovationPlan } from '@/lib/api';
+import { ApiError, recommandations } from '@/lib/api';
 import { rentalKey, type DpeClass } from '@/lib/dpe';
-import { euros, kEurosRange } from '@/lib/format';
 import { rich } from '@/lib/rich';
-import type { Logement, PlanRenovation } from '@/lib/types';
+import type { Logement, Recommandations } from '@/lib/types';
 import { Check, Info, Spark } from '../Icons';
 
 const RENT_YEAR = { free: '✓', e2034: '2034', f2028: '2028', g2025: '2025' } as const;
 
-/** Agent de rénovation : lancé à la demande, il affiche ses étapes puis un plan chiffré lisible. */
+/**
+ * Agent de rénovation (`POST /agent`) : lancé à la demande, il affiche ses étapes puis les recommandations
+ * telles que l'API les renvoie (textes générés). Aucun chiffre n'est calculé ni ajouté par le site.
+ */
 export function AgentPanel({ logement, classe }: { logement: Logement; classe: DpeClass }) {
   const t = useTranslations('result');
+  const s = useTranslations('home.sim');
   const locale = useLocale();
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [step, setStep] = useState(0);
-  const [plan, setPlan] = useState<PlanRenovation | null>(null);
+  const [rec, setRec] = useState<Recommandations | null>(null);
   const [demo, setDemo] = useState(false);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const ctrl = useRef<AbortController | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => () => ctrl.current?.abort(), []);
   useEffect(() => {
     if (status !== 'loading') return;
-    const id = setInterval(() => setStep((s) => Math.min(s + 1, 2)), 1400);
+    const id = setInterval(() => setStep((x) => Math.min(x + 1, 2)), 1400);
     return () => clearInterval(id);
   }, [status]);
 
@@ -34,20 +38,28 @@ export function AgentPanel({ logement, classe }: { logement: Logement; classe: D
     ctrl.current = new AbortController();
     setStatus('loading');
     setStep(0);
+    setErrorDetail(null);
     try {
-      const r = await renovationPlan(logement, classe, ctrl.current.signal);
-      setPlan(r.data);
+      const r = await recommandations(logement, classe, locale, s(`chauffages.${logement.chauffage}`), ctrl.current.signal);
+      // Repli de l'API quand la génération a échoué : ni travaux ni aides. On l'affiche comme une erreur.
+      if (!r.demo && r.data.travaux.items.length === 0 && r.data.aides.items.length === 0) {
+        setErrorDetail(r.data.situation.detail || null);
+        setStatus('error');
+        return;
+      }
+      setRec(r.data);
       setDemo(r.demo);
       setStatus('done');
       requestAnimationFrame(() => resultRef.current?.focus());
-    } catch {
-      if (!ctrl.current.signal.aborted) setStatus('error');
+    } catch (e) {
+      if (ctrl.current.signal.aborted) return;
+      if (e instanceof ApiError && e.status === 422) setErrorDetail(e.message);
+      setStatus('error');
     }
   };
 
   const steps = t.raw('agent.steps') as string[];
   const rent = rentalKey(classe);
-  const total = plan ? plan.travaux.reduce((a, w) => ({ min: a.min + w.coutMin, max: a.max + w.coutMax }), { min: 0, max: 0 }) : null;
 
   return (
     <section className="sec" style={{ paddingTop: 0 }} aria-labelledby="agent-title">
@@ -75,10 +87,10 @@ export function AgentPanel({ logement, classe }: { logement: Logement; classe: D
             {status === 'loading' && (
               <div className="agent-grid" style={{ marginTop: 0 }}>
                 <ol className="steps">
-                  {steps.map((s, k) => (
-                    <li key={s} style={{ color: k <= step ? 'var(--ink)' : 'var(--mut)' }}>
+                  {steps.map((st, k) => (
+                    <li key={st} style={{ color: k <= step ? 'var(--ink)' : 'var(--mut)' }}>
                       {k < step ? <span className="done-ic"><Check /></span> : k === step ? <span className="spin" /> : <span className="todo-ic" />}
-                      {s}
+                      {st}
                     </li>
                   ))}
                 </ol>
@@ -91,13 +103,15 @@ export function AgentPanel({ logement, classe }: { logement: Logement; classe: D
               </div>
             )}
 
-            {status === 'error' && <p className="notice"><Info />{t('agent.error')}</p>}
+            {status === 'error' && (
+              <p className="notice"><Info /><span>{t('agent.error')}{errorDetail && <><br />{errorDetail}</>}</span></p>
+            )}
 
-            {status === 'done' && plan && total && (
+            {status === 'done' && rec && (
               <div ref={resultRef} tabIndex={-1} style={{ outline: 'none' }}>
                 {demo && <p className="notice" style={{ marginBottom: 20 }}><Info />{t('demo')}</p>}
 
-                <div className="facts">
+                <div className="facts facts-2">
                   <div className="fact">
                     <p className="kick muted" style={{ fontSize: 11 }}>{t('agent.current')}</p>
                     <div className="fact-v"><span className={`cls c-${classe}`} style={{ width: 46, height: 46, fontSize: 26 }}>{classe}</span></div>
@@ -108,62 +122,38 @@ export function AgentPanel({ logement, classe }: { logement: Logement; classe: D
                     <div className="fact-v">{RENT_YEAR[rent]}</div>
                     <p className="small" style={{ marginTop: 10, fontSize: 13 }}>{t(`impl.rental.${rent}.title`)}</p>
                   </div>
-                  <div className="fact">
-                    <p className="kick muted" style={{ fontSize: 11 }}>{t('agent.goal')}</p>
-                    <div className="fact-v"><span className={`cls c-${plan.objectif}`} style={{ width: 46, height: 46, fontSize: 26 }}>{plan.objectif}</span></div>
-                    <p className="small" style={{ marginTop: 10, fontSize: 13 }}>{t('agent.goalText')}</p>
-                  </div>
-                  <div className="fact">
-                    <p className="kick muted" style={{ fontSize: 11 }}>{t('agent.budget')}</p>
-                    <div className="fact-v" style={{ fontSize: 'clamp(22px, 2.2vw, 30px)', whiteSpace: 'nowrap' }}>{kEurosRange(total.min, total.max, locale)}</div>
-                    <p className="small" style={{ marginTop: 10, fontSize: 13 }}>{t('agent.budgetText')}</p>
-                  </div>
                 </div>
 
-                <div className="situation">
-                  <p className="kick">{t('agent.situation')}</p>
-                  <div>
-                    <p style={{ margin: 0, fontWeight: 600, fontSize: 17 }}>{plan.situation}</p>
-                    <p className="small" style={{ marginTop: 8, fontSize: 15 }}>{plan.details}</p>
+                {(rec.situation.resume || rec.situation.detail) && (
+                  <div className="situation">
+                    <p className="kick">{t('agent.situation')}</p>
+                    <div>
+                      {rec.situation.resume && <p style={{ margin: 0, fontWeight: 600, fontSize: 17 }}>{rec.situation.resume}</p>}
+                      {rec.situation.detail && <p className="small" style={{ marginTop: 8, fontSize: 15 }}>{rec.situation.detail}</p>}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="agent-grid">
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                      <h3 className="h3" style={{ fontSize: 26 }}>{t('agent.works')}</h3>
-                      <span className="kick muted" style={{ fontSize: 11 }}>{t('agent.byImpact')}</span>
-                    </div>
+                    <h3 className="h3" style={{ fontSize: 26 }}>{t('agent.works')}</h3>
+                    {rec.travaux.resume && <p className="small" style={{ marginTop: 8 }}>{rec.travaux.resume}</p>}
                     <ol className="works">
-                      {plan.travaux.map((w, k) => (
-                        <li key={w.titre} className="work">
-                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
-                            <span className="mono acc" style={{ fontSize: 12 }}>0{k + 1}</span>
-                            <span className={w.impact === 'fort' ? 'tag acc' : 'tag'}>{t(`agent.impact.${w.impact}`)}</span>
-                          </div>
-                          <p style={{ margin: '16px 0 0', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 19, letterSpacing: '-0.01em' }}>{w.titre}</p>
-                          <p className="small" style={{ marginTop: 8, flex: 1 }}>{w.description}</p>
-                          <div className="work-price">
-                            <span className="small" style={{ fontSize: 12.5 }}>{t('agent.cost')}</span>
-                            <strong className="mono" style={{ fontSize: 14, whiteSpace: 'nowrap' }}>{euros(w.coutMin, locale)} – {euros(w.coutMax, locale)}</strong>
-                          </div>
+                      {rec.travaux.items.map((w, k) => (
+                        <li key={k} className="work">
+                          <span className="mono acc" style={{ fontSize: 12 }}>{String(k + 1).padStart(2, '0')}</span>
+                          <p style={{ margin: '12px 0 0', lineHeight: 1.55 }}>{w}</p>
                         </li>
                       ))}
                     </ol>
                   </div>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                      <h3 className="h3" style={{ fontSize: 26 }}>{t('agent.aids')}</h3>
-                      <span className="kick muted" style={{ fontSize: 11 }}>{t('agent.rules')}</span>
-                    </div>
+                    <h3 className="h3" style={{ fontSize: 26 }}>{t('agent.aids')}</h3>
+                    {rec.aides.resume && <p className="small" style={{ marginTop: 8 }}>{rec.aides.resume}</p>}
                     <ul className="aids">
-                      {plan.aides.map((a) => (
-                        <li key={a.nom} className="aid">
-                          <div>
-                            <p style={{ margin: 0, fontWeight: 700 }}>{a.nom}</p>
-                            <p className="small" style={{ marginTop: 4 }}>{a.description}</p>
-                          </div>
-                          <span className="tag acc">{a.statut}</span>
+                      {rec.aides.items.map((a, k) => (
+                        <li key={k} className="aid" style={{ gridTemplateColumns: '1fr' }}>
+                          <p style={{ margin: 0, lineHeight: 1.55 }}>{a}</p>
                         </li>
                       ))}
                     </ul>

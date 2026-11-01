@@ -3,7 +3,7 @@
 import { useId, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
-import { CHAUFFAGES, isPacaPostalCode, PERIODES, toSearchParams, TYPES } from '@/lib/logement';
+import { CHAUFFAGES, isAnneeValide, isPacaPostalCode, periodeDeAnnee, PERIODES, toSearchParams, TYPES } from '@/lib/logement';
 import type { Chauffage, Logement, Periode, TypeLogement } from '@/lib/types';
 import { ArrowUpRight } from './Icons';
 
@@ -22,13 +22,14 @@ function Seg<T extends string>({ label, options, value, onChange, labelOf }: { l
   );
 }
 
-/** Formulaire des 5 informations. Envoie vers /simulateur avec les paramètres dans l'URL (partageable). */
+/** Formulaire des 5 informations (+ année exacte facultative). Envoie vers /simulateur avec les paramètres dans l'URL (partageable). */
 export function SimulatorForm({ initial }: { initial?: Logement | null }) {
   const t = useTranslations('home.sim');
   const router = useRouter();
   const id = useId();
   const [surface, setSurface] = useState(initial ? String(initial.surface) : '');
-  const [periode, setPeriode] = useState<Periode>(initial?.periode ?? '1948-1974');
+  const [periode, setPeriode] = useState<Periode>(initial?.periode ?? '1948_1974');
+  const [annee, setAnnee] = useState(initial?.annee != null ? String(initial.annee) : '');
   const [type, setType] = useState<TypeLogement>(initial?.type ?? 'maison');
   const [chauffage, setChauffage] = useState<Chauffage>(initial?.chauffage ?? 'electricite');
   const [cp, setCp] = useState(initial?.codePostal ?? '');
@@ -37,15 +38,28 @@ export function SimulatorForm({ initial }: { initial?: Logement | null }) {
   const s = Number(surface.replace(',', '.'));
   const surfaceOk = Number.isFinite(s) && s >= 9 && s <= 1000;
   const cpOk = isPacaPostalCode(cp.trim());
+  const a = Number(annee);
+  const anneeOk = annee === '' || isAnneeValide(a);
+
+  // L’année exacte, si elle est valide, fixe la période (mêmes bornes que l’API)
+  const changeAnnee = (v: string) => {
+    setAnnee(v);
+    const n = Number(v);
+    if (v.length === 4 && isAnneeValide(n)) setPeriode(periodeDeAnnee(n));
+  };
+  const changePeriode = (p: Periode) => {
+    setPeriode(p);
+    if (annee !== '' && isAnneeValide(a) && periodeDeAnnee(a) !== p) setAnnee('');
+  };
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setTouched(true);
-    if (!surfaceOk || !cpOk) {
-      document.getElementById(!surfaceOk ? `${id}-s` : `${id}-cp`)?.focus();
+    if (!surfaceOk || !anneeOk || !cpOk) {
+      document.getElementById(!surfaceOk ? `${id}-s` : !anneeOk ? `${id}-a` : `${id}-cp`)?.focus();
       return;
     }
-    const qs = toSearchParams({ surface: Math.round(s), periode, type, chauffage, codePostal: cp.trim() });
+    const qs = toSearchParams({ surface: Math.round(s), periode: annee ? periodeDeAnnee(a) : periode, annee: annee ? a : undefined, type, chauffage, codePostal: cp.trim() });
     router.push(`/simulateur?${qs.toString()}`);
   };
 
@@ -69,9 +83,32 @@ export function SimulatorForm({ initial }: { initial?: Logement | null }) {
         {touched && !surfaceOk && <p id={`${id}-se`} className="field-err">{t('surfaceError')}</p>}
       </div>
 
-      <Seg label={t('periode')} options={PERIODES} value={periode} onChange={setPeriode} labelOf={(v) => t(`periodes.${v}`)} />
+      <Seg label={t('periode')} options={PERIODES} value={periode} onChange={changePeriode} labelOf={(v) => t(`periodes.${v}`)} />
+
+      <div>
+        <label className="lbl" htmlFor={`${id}-a`}>{t('annee')}</label>
+        <input
+          id={`${id}-a`} className="inp" inputMode="numeric" autoComplete="off" maxLength={4} placeholder={t('anneePh')}
+          value={annee} onChange={(e) => changeAnnee(e.target.value.replace(/D/g, ''))}
+          aria-invalid={touched && !anneeOk} aria-describedby={`${id}-ah`}
+        />
+        <p id={`${id}-ah`} className={touched && !anneeOk ? 'field-err' : 'small'} style={{ marginTop: 6, fontSize: 13 }}>
+          {touched && !anneeOk ? t('anneeError') : t('anneeHelp')}
+        </p>
+      </div>
+
       <Seg label={t('type')} options={TYPES} value={type} onChange={setType} labelOf={(v) => t(`types.${v}`)} />
-      <Seg label={t('chauffage')} options={CHAUFFAGES} value={chauffage} onChange={setChauffage} labelOf={(v) => t(`chauffages.${v}`)} />
+
+      <div>
+        <label className="lbl" htmlFor={`${id}-ch`}>{t('chauffage')}</label>
+        <select
+          id={`${id}-ch`} className="inp" value={chauffage} aria-describedby={`${id}-chh`}
+          onChange={(e) => setChauffage(e.target.value as Chauffage)}
+        >
+          {CHAUFFAGES.map((c) => <option key={c} value={c}>{t(`chauffages.${c}`)}</option>)}
+        </select>
+        <p id={`${id}-chh`} className="small" style={{ marginTop: 6, fontSize: 13 }}>{t('chauffageHelp')}</p>
+      </div>
 
       <div>
         <label className="lbl" htmlFor={`${id}-cp`}>{t('cp')}</label>

@@ -12,3 +12,10 @@ export function euros(value: number, locale: string) {
 export function percent(value: number, locale: string) {
   return new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 }).format(value);
 }
+/**
+ * Probabilité ou poids affiché : jamais « 0 % » (la calibration isotonique peut renvoyer 0 exact).
+ * Sous 1 %, affiche `lessThanOne` (texte des messages, « < 1 % »). La valeur n'est pas modifiée.
+ */
+export function pct(value: number, locale: string, lessThanOne: string) {
+  return value < 0.01 ? lessThanOne : percent(value, locale);
+}
