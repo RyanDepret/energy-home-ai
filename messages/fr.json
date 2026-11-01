@@ -11,7 +11,7 @@
     },
     "assistant": {
       "title": "Assistant IA",
-      "description": "Un assistant qui répond à vos questions sur la rénovation énergétique à partir de documents de référence, et montre les extraits utilisés."
+      "description": "Un assistant qui répond à vos questions sur la rénovation énergétique à partir de documents de référence, rédigées par Claude Haiku ou Mistral Small, et comparables côte à côte."
     },
     "about": {
       "title": "À propos",
@@ -134,7 +134,7 @@
         {
           "value": "2",
           "unit": "",
-          "text": "modèles d’IA dans l’assistant : Mistral pour la recherche, Claude pour la rédaction"
+          "text": "modèles de langage au choix pour rédiger les réponses, Claude Haiku ou Mistral Small, à comparer côte à côte"
         },
         {
           "value": "1",
@@ -162,7 +162,7 @@
         {
           "t1": "L’assistant",
           "t2": "qui cite",
-          "text": "Un RAG qui cherche dans des documents de référence (embeddings Mistral), puis rédige la réponse avec Claude Haiku et montre les extraits utilisés.",
+          "text": "Un RAG qui cherche dans des documents de référence (embeddings Mistral), puis rédige la réponse avec Claude Haiku ou Mistral Small, au choix ou côte à côte, et montre les extraits utilisés.",
           "tags": [
             "RAG",
             "Claude",
@@ -398,7 +398,7 @@
       },
       {
         "t": "Rédaction",
-        "d": "Claude Haiku répond à partir de ces passages"
+        "d": "Claude Haiku ou Mistral Small répond à partir de ces passages ; en mode Comparer, les deux reçoivent les mêmes"
       }
     ],
     "name": "Assistant EnergyHome",
@@ -406,9 +406,17 @@
     "modelGroup": "Modèle de langage",
     "modes": {
       "claude": "Claude Haiku",
-      "comparer": "Comparer",
-      "soon": "bientôt"
+      "mistral": "Mistral Small",
+      "comparer": "Comparer"
     },
+    "compare": {
+      "hint": "Mode Comparer : même recherche, mêmes extraits, la question est posée à Claude Haiku puis à Mistral Small.",
+      "waiting": "En attente de la réponse de {modele}…",
+      "stopped": "Arrêté avant la réponse.",
+      "sourcesCommon": "Extraits utilisés par les deux modèles (même recherche)"
+    },
+    "duree": "{s} s",
+    "tokens": "{e} tokens en entrée, {s} en sortie",
     "welcome": "Bonjour ! Posez-moi une question sur la rénovation énergétique, le DPE ou les aides. Je réponds à partir de documents de référence et je montre les extraits utilisés.",
     "preparing": "L’assistant prépare sa réponse",
     "phases": [
@@ -433,7 +441,11 @@
       "appartement": "Appartement"
     },
     "score": "similarité {s}",
-    "error": "L’assistant n’a pas pu répondre. Réessayez dans un instant."
+    "errors": {
+      "modele": "{modele} est momentanément saturé ou indisponible. Réessayez dans un instant.",
+      "recherche": "La recherche documentaire est momentanément indisponible. Réessayez dans un instant.",
+      "generique": "{modele} n’a pas pu répondre. Réessayez dans un instant."
+    }
   },
   "about": {
     "kick": "À propos",
@@ -452,7 +464,7 @@
       },
       {
         "t": "L’assistant",
-        "d": "Un pipeline RAG : recherche sémantique (embeddings Mistral) puis génération de la réponse avec Claude Haiku (Anthropic)."
+        "d": "Un pipeline RAG : recherche sémantique (embeddings Mistral), puis génération de la réponse avec Claude Haiku (Anthropic) ou Mistral Small (Mistral AI). En mode Comparer, les deux modèles reçoivent exactement les mêmes passages et leurs réponses s’affichent côte à côte."
       }
     ],
     "archiKick": "(02) — Architecture",
@@ -482,7 +494,7 @@
       "rag": {
         "k": "RAG",
         "t": "Mistral & Claude",
-        "d": "Embeddings Mistral + génération Claude Haiku"
+        "d": "Embeddings Mistral + génération Claude Haiku ou Mistral Small"
       }
     },
     "stackKick": "(03) — Stack technique",
@@ -495,11 +507,11 @@
         "items": [
           [
             "Claude Haiku",
-            "Anthropic · rédaction des réponses et des recommandations"
+            "Anthropic · rédaction des réponses (au choix) et des recommandations"
           ],
           [
             "Mistral AI",
-            "Embeddings pour la recherche sémantique"
+            "Embeddings pour la recherche sémantique et rédaction des réponses au choix (Mistral Small)"
           ],
           [
             "RAG",
@@ -524,7 +536,7 @@
           ],
           [
             "API Mistral",
-            "Embeddings, requêtes HTTP directes"
+            "Embeddings et génération de texte, requêtes HTTP directes"
           ],
           [
             "next-intl",
@@ -773,14 +785,14 @@
             "Claude Haiku",
             "Anthropic",
             "API commerciale",
-            "Génération des réponses et des recommandations",
+            "Génération des réponses de l’assistant (au choix) et des recommandations de l’agent",
             "https://www.anthropic.com"
           ],
           [
             "Mistral AI",
             "Mistral AI",
             "API commerciale",
-            "Embeddings pour la recherche sémantique (mistral-embed)",
+            "Embeddings pour la recherche sémantique (mistral-embed) et génération des réponses de l’assistant au choix (Mistral Small)",
             "https://mistral.ai"
           ],
           [
@@ -913,7 +925,7 @@
         {
           "t": "Assistant IA",
           "p": [
-            "Vos questions sont transmises à Mistral AI (France) pour la recherche des passages pertinents, puis à Anthropic (Claude, États-Unis) pour rédiger la réponse. Si vous lancez l’agent de recommandations, les caractéristiques de votre logement et sa classe estimée sont transmises à Anthropic pour rédiger les recommandations. N’y saisissez pas de données personnelles."
+            "Vos questions sont transmises à Mistral AI (France) pour la recherche des passages pertinents, puis, selon le modèle choisi, à Anthropic (Claude, États-Unis) ou à Mistral AI (Mistral Small, France) pour rédiger la réponse ; en mode Comparer, aux deux. Si vous lancez l’agent de recommandations, les caractéristiques de votre logement et sa classe estimée sont transmises à Anthropic pour rédiger les recommandations. N’y saisissez pas de données personnelles."
           ]
         },
         {

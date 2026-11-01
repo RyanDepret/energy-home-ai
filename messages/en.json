@@ -11,7 +11,7 @@
     },
     "assistant": {
       "title": "AI assistant",
-      "description": "An assistant that answers your energy-renovation questions from reference documents and shows the excerpts it used."
+      "description": "An assistant that answers your energy-renovation questions from reference documents, with answers written by Claude Haiku or Mistral Small and comparable side by side."
     },
     "about": {
       "title": "About",
@@ -134,7 +134,7 @@
         {
           "value": "2",
           "unit": "",
-          "text": "AI models in the assistant: Mistral for search, Claude for writing"
+          "text": "language models to choose from to write the answers, Claude Haiku or Mistral Small, to compare side by side"
         },
         {
           "value": "1",
@@ -162,7 +162,7 @@
         {
           "t1": "The assistant",
           "t2": "that cites",
-          "text": "A RAG pipeline that searches reference documents (Mistral embeddings), then writes the answer with Claude Haiku and shows the excerpts it used.",
+          "text": "A RAG pipeline that searches reference documents (Mistral embeddings), then writes the answer with Claude Haiku or Mistral Small, one or both side by side, and shows the excerpts it used.",
           "tags": [
             "RAG",
             "Claude",
@@ -398,7 +398,7 @@
       },
       {
         "t": "Writing",
-        "d": "Claude Haiku answers from those passages"
+        "d": "Claude Haiku or Mistral Small answers from those passages; in Compare mode, both get the same ones"
       }
     ],
     "name": "EnergyHome assistant",
@@ -406,9 +406,17 @@
     "modelGroup": "Language model",
     "modes": {
       "claude": "Claude Haiku",
-      "comparer": "Compare",
-      "soon": "soon"
+      "mistral": "Mistral Small",
+      "comparer": "Compare"
     },
+    "compare": {
+      "hint": "Compare mode: same search, same excerpts; the question goes to Claude Haiku, then to Mistral Small.",
+      "waiting": "Waiting for {modele}’s answer…",
+      "stopped": "Stopped before answering.",
+      "sourcesCommon": "Excerpts used by both models (same search)"
+    },
+    "duree": "{s} s",
+    "tokens": "{e} input tokens, {s} output",
     "welcome": "Hello! Ask me anything about energy renovation, the DPE or grants. I answer from reference documents and show the excerpts I used.",
     "preparing": "The assistant is preparing its answer",
     "phases": [
@@ -433,7 +441,11 @@
       "appartement": "Flat"
     },
     "score": "similarity {s}",
-    "error": "The assistant could not answer. Please try again in a moment."
+    "errors": {
+      "modele": "{modele} is temporarily overloaded or unavailable. Try again in a moment.",
+      "recherche": "Document search is temporarily unavailable. Try again in a moment.",
+      "generique": "{modele} could not answer. Try again in a moment."
+    }
   },
   "about": {
     "kick": "About",
@@ -452,7 +464,7 @@
       },
       {
         "t": "The assistant",
-        "d": "A RAG pipeline: semantic search (Mistral embeddings), then answer generation with Claude Haiku (Anthropic)."
+        "d": "A RAG pipeline: semantic search (Mistral embeddings), then answer generation with Claude Haiku (Anthropic) or Mistral Small (Mistral AI). In Compare mode, both models get exactly the same passages and their answers are shown side by side."
       }
     ],
     "archiKick": "(02) — Architecture",
@@ -482,7 +494,7 @@
       "rag": {
         "k": "RAG",
         "t": "Mistral & Claude",
-        "d": "Mistral embeddings + Claude Haiku generation"
+        "d": "Mistral embeddings + Claude Haiku or Mistral Small generation"
       }
     },
     "stackKick": "(03) — Tech stack",
@@ -495,11 +507,11 @@
         "items": [
           [
             "Claude Haiku",
-            "Anthropic · writes answers and recommendations"
+            "Anthropic · writes answers (if chosen) and recommendations"
           ],
           [
             "Mistral AI",
-            "Embeddings for semantic search"
+            "Embeddings for semantic search and, if chosen, answers (Mistral Small)"
           ],
           [
             "RAG",
@@ -524,7 +536,7 @@
           ],
           [
             "Mistral API",
-            "Embeddings, direct HTTP requests"
+            "Embeddings and text generation, direct HTTP requests"
           ],
           [
             "next-intl",
@@ -773,14 +785,14 @@
             "Claude Haiku",
             "Anthropic",
             "Commercial API",
-            "Answer and recommendation generation",
+            "Assistant answers (if chosen) and agent recommendations",
             "https://www.anthropic.com"
           ],
           [
             "Mistral AI",
             "Mistral AI",
             "Commercial API",
-            "Embeddings for semantic search (mistral-embed)",
+            "Embeddings for semantic search (mistral-embed) and, if chosen, assistant answers (Mistral Small)",
             "https://mistral.ai"
           ],
           [
@@ -913,7 +925,7 @@
         {
           "t": "AI assistant",
           "p": [
-            "Your questions are sent to Mistral AI (France) to find relevant passages, then to Anthropic (Claude, USA) to write the answer. If you run the recommendations agent, your home’s characteristics and estimated class are sent to Anthropic to write the recommendations. Do not enter personal data."
+            "Your questions are sent to Mistral AI (France) to find relevant passages, then, depending on the model you choose, to Anthropic (Claude, USA) or Mistral AI (Mistral Small, France) to write the answer; in Compare mode, to both. If you run the recommendations agent, your home’s characteristics and estimated class are sent to Anthropic to write the recommendations. Do not enter personal data."
           ]
         },
         {
