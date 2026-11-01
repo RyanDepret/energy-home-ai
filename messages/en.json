@@ -937,7 +937,8 @@
         {
           "t": "Cookies and analytics",
           "p": [
-            "No advertising or analytics cookies. Fonts are hosted on the site: no data is sent to Google Fonts."
+            "The site sets a single cookie, NEXT_LOCALE, which remembers the language you chose (French or English). It is set when you switch languages, or when the displayed language differs from your browser’s, and it is deleted when you close your browser. Because it stores a preference you expressed, it is exempt from consent (article 82 of the French Data Protection Act, CNIL guidelines).",
+            "No analytics or advertising cookies. Fonts are hosted on the site: no data is sent to Google Fonts."
           ]
         },
         {

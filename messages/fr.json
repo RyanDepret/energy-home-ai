@@ -937,7 +937,8 @@
         {
           "t": "Cookies et mesure d’audience",
           "p": [
-            "Aucun cookie publicitaire ni de mesure d’audience. Les polices sont hébergées sur le site : aucune donnée n’est envoyée à Google Fonts."
+            "Le site dépose un seul cookie, NEXT_LOCALE, qui mémorise la langue choisie (français ou anglais). Il est déposé quand vous changez de langue, ou quand la langue affichée diffère de celle de votre navigateur, et il est supprimé à la fermeture du navigateur. Comme il conserve une préférence que vous avez exprimée, il est exempté de consentement (article 82 de la loi Informatique et Libertés, lignes directrices de la CNIL).",
+            "Aucun cookie de mesure d’audience ni de publicité. Les polices sont hébergées sur le site : aucune donnée n’est envoyée à Google Fonts."
           ]
         },
         {
