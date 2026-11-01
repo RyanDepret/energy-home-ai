@@ -277,6 +277,7 @@
     "demo": "Mode démonstration : l’API est injoignable, les chiffres affichés sont des exemples, pas une estimation de votre logement.",
     "lt1": "< 1 %",
     "error": "L’estimation n’a pas pu être calculée.",
+    "errorServer": "L’API a renvoyé une erreur. Réessayez dans un instant.",
     "errorEdit": "Modifier mes informations",
     "chips": "{type} · {surface} m² · {periode} · {chauffage} · {cp}",
     "estimated": "Classe estimée",

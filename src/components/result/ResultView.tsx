@@ -33,10 +33,10 @@ export function ResultView({ logement }: { logement: Logement }) {
       .then((r) => { setPred(r.data); setDemo(r.demo); })
       .catch((e: unknown) => {
         // Erreur renvoyée par l’API (422 : données refusées) : on affiche son message, pas le mode démo
-        if (e instanceof ApiError) setError(e.message);
+        if (e instanceof ApiError) setError(e.status === 422 ? e.message : t('errorServer'));
       });
     return () => ctrl.abort();
-  }, [logement]);
+  }, [logement, t]);
 
   const chips = t('chips', {
     type: s(`types.${logement.type}`), surface: logement.surface, periode: logement.annee != null ? String(logement.annee) : s(`periodes.${logement.periode}`),

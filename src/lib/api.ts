@@ -55,9 +55,25 @@ async function call<T>(path: string, body: unknown, timeoutMs: number, signal?: 
   }
 }
 
-/** Repli démo seulement si l'API n'a pas répondu ; sinon l'erreur est relancée. */
-function replier<T>(e: unknown, signal: AbortSignal | undefined, demo: () => T): ApiResult<T> {
+/** L'API répond-elle ? (`GET /health`, délai court) */
+async function apiJoignable(): Promise<boolean> {
+  if (!API) return false;
+  try {
+    const res = await fetch(`${API}/health`, { signal: AbortSignal.timeout(3000) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Repli démo seulement si l'API n'a pas répondu ; sinon l'erreur est relancée.
+ * Une erreur 500 non gérée par FastAPI arrive sans en-tête CORS : le navigateur la présente comme une erreur
+ * réseau. On vérifie donc `/health` avant de conclure que l'API est injoignable.
+ */
+async function replier<T>(e: unknown, signal: AbortSignal | undefined, demo: () => T): Promise<ApiResult<T>> {
   if (signal?.aborted || e instanceof ApiError) throw e;
+  if (await apiJoignable()) throw new ApiError(500, 'Erreur interne de l’API');
   return { data: demo(), demo: true };
 }
 

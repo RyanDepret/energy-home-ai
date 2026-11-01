@@ -277,6 +277,7 @@
     "demo": "Demo mode: the API cannot be reached, the figures shown are examples, not an estimate of your home.",
     "lt1": "< 1%",
     "error": "The estimate could not be computed.",
+    "errorServer": "The API returned an error. Please try again in a moment.",
     "errorEdit": "Edit my details",
     "chips": "{type} · {surface} m² · {periode} · {chauffage} · {cp}",
     "estimated": "Estimated class",

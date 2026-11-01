@@ -8,3 +8,6 @@ next-env.d.ts
 
 # Déverrouillage de src/lib/dpe.ts pour Claude Code (créé à la main, jamais commité)
 .claude/autoriser-dpe
+
+# Captures et journaux du serveur Playwright MCP
+.playwright-mcp/
