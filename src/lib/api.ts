@@ -1,4 +1,4 @@
-import type { ApiResult, Importance, Logement, Prediction, Recommandations, ReponseChat } from './types';
+import type { ApiResult, Importance, Logement, ModeleChat, Prediction, Recommandations, ReponseChat } from './types';
 import type { DpeClass } from './dpe';
 import { anneeDebutPeriode } from './logement';
 import { demoChat, demoRecommandations, demoPrediction } from './demo';
@@ -14,7 +14,8 @@ const API = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
 
 /** Erreur renvoyée par l'API elle-même (elle a répondu, mais avec un code d'erreur). */
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  /** `code` : champ `code` du corps d'erreur, s'il existe (`modele_indisponible`, `recherche_indisponible`, `erreur_interne`). */
+  constructor(public status: number, message: string, public code?: string) {
     super(message);
     this.name = 'ApiError';
   }
@@ -47,7 +48,8 @@ async function call<T>(path: string, body: unknown, timeoutMs: number, signal?: 
     });
     if (!res.ok) {
       const data = await res.json().catch(() => null);
-      throw new ApiError(res.status, messageErreur(data) ?? `API ${path} : ${res.status}`);
+      const code = (data as { code?: unknown } | null)?.code;
+      throw new ApiError(res.status, messageErreur(data) ?? `API ${path} : ${res.status}`, typeof code === 'string' ? code : undefined);
     }
     return (await res.json()) as T;
   } finally {
@@ -133,11 +135,30 @@ export async function recommandations(
   }
 }
 
-export async function chat(question: string, locale: string, signal?: AbortSignal): Promise<ApiResult<ReponseChat>> {
+/**
+ * Assistant (`POST /chat`). Pour comparer, appeler deux fois (un modèle après l'autre) : l'API garantit que
+ * les sources sont les mêmes pour les deux modèles, seule la génération change.
+ */
+export async function chat(question: string, locale: string, modele: ModeleChat, signal?: AbortSignal): Promise<ApiResult<ReponseChat>> {
   try {
-    const r = await call<{ reponse: string; sources?: { extrait: string; score: number }[] }>('/chat', { question, locale }, 60000, signal);
-    return { data: { texte: r.reponse, sources: r.sources ?? [] }, demo: false };
+    const r = await call<{
+      reponse: string;
+      sources?: { extrait: string; score: number }[];
+      modele?: ModeleChat;
+      duree_ms?: number;
+      tokens?: { entree: number; sortie: number } | null;
+    }>('/chat', { question, locale, modele }, 60000, signal);
+    return {
+      data: {
+        texte: r.reponse,
+        sources: r.sources ?? [],
+        modele: r.modele ?? modele,
+        dureeMs: r.duree_ms,
+        tokens: r.tokens ?? undefined,
+      },
+      demo: false,
+    };
   } catch (e) {
-    return replier(e, signal, () => demoChat(question));
+    return replier(e, signal, () => demoChat(question, modele));
   }
 }

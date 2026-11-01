@@ -38,7 +38,17 @@ export interface Recommandations {
 
 /** Source renvoyée par `POST /chat` : un extrait du document et son score de similarité. */
 export interface Source { extrait: string; score: number }
-export interface ReponseChat { texte: string; sources: Source[] }
+/** Modèle de génération de `POST /chat` : la recherche documentaire (et donc les sources) est la même pour les deux. */
+export type ModeleChat = 'claude' | 'mistral';
+export interface ReponseChat {
+  texte: string;
+  sources: Source[];
+  modele: ModeleChat;
+  /** Temps de génération seul, mesuré par l'API (absent en mode démonstration). */
+  dureeMs?: number;
+  /** Présent seulement si le fournisseur renvoie l'usage. */
+  tokens?: { entree: number; sortie: number };
+}
 
 /** Résultat d'un appel : `demo` vaut true quand l'API est injoignable et que des données d'exemple sont affichées. */
 export interface ApiResult<T> { data: T; demo: boolean }

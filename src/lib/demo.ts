@@ -1,4 +1,4 @@
-import type { Logement, Prediction, Recommandations, ReponseChat } from './types';
+import type { Logement, ModeleChat, Prediction, Recommandations, ReponseChat } from './types';
 import { CLASSES, type DpeClass } from './dpe';
 import { PERIODES } from './logement';
 
@@ -49,8 +49,9 @@ export function demoRecommandations(classe: DpeClass): Recommandations {
   };
 }
 
-export function demoChat(question: string): ReponseChat {
+export function demoChat(question: string, modele: ModeleChat): ReponseChat {
   return {
+    modele,
     texte: `Réponse de démonstration (API indisponible) à : « ${question} ». Ici s’affichera la réponse rédigée à partir des passages récupérés.`,
     sources: [{ extrait: '[Extrait de document 1]', score: 0 }, { extrait: '[Extrait de document 2]', score: 0 }],
   };
