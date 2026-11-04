@@ -31,11 +31,18 @@ Le site appelle l’API FastAPI du dépôt `energyhome-api` (branche `v2`), à p
 
 ## Variables d'environnement
 
-| Variable | Exemple | Rôle |
-| --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | `https://api.energyhome.ai` | URL de l'API FastAPI (figée au build) |
-| `NEXT_PUBLIC_SITE_URL` | `https://energyhome.ai` | URL publique (SEO, sitemap, image de partage) |
-| `CONTACT_WEBHOOK_URL` | `https://hook.eu2.make.com/…` | Webhook qui reçoit le formulaire de contact (sinon : 503 et l'email s'affiche en repli) |
+À définir dans Vercel (Settings → Environment Variables). Les variables `NEXT_PUBLIC_*` sont figées au build : après une modification, relancer un déploiement.
+
+| Variable | Exemple | Production Vercel | Rôle |
+| --- | --- | --- | --- |
+| `NEXT_PUBLIC_API_URL` | `https://api.energyhome.ai` | Recommandée | URL de l'API FastAPI (sans elle : mode démonstration) |
+| `NEXT_PUBLIC_SITE_URL` | `https://energyhome.ai` | **Obligatoire** | URL publique (SEO, sitemap, canoniques, image de partage). Le build échoue si elle est absente ou contient `localhost` quand `VERCEL_ENV=production` ; en local et sur les aperçus, repli sur `http://localhost:3000` |
+| `CONTACT_WEBHOOK_URL` | `https://hook.eu2.make.com/…` | Facultative | Webhook qui reçoit le formulaire de contact (sinon : 503 et l'email s'affiche en repli) |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | `abc123…` | Facultative | Code de vérification Google Search Console (méthode « balise HTML », valeur de `content` seulement). Absente : aucune balise |
+
+`VERCEL_ENV` est fourni automatiquement par Vercel (`production`, `preview` ou `development`) : ne pas le définir à la main.
+
+En-têtes de sécurité ajoutés sur toutes les routes (`next.config.ts`) : `Content-Security-Policy: frame-ancestors 'none'`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`.
 
 ## Contrat d'API (FastAPI)
 

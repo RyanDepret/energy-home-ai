@@ -110,7 +110,7 @@ export function ContactForm() {
         {err('consent')}
       </div>
       {errors.server && <p className="notice" role="alert">{t('errors.server')} <a href={`mailto:${SITE.email}`} className="lk" style={{ fontWeight: 700 }}>{SITE.email}</a></p>}
-      <button type="submit" className="btn btn-lg" disabled={status === 'sending'} style={{ width: '100%' }}>
+      <button type="submit" className="btn btn-lg btn-block" disabled={status === 'sending'}>
         {status === 'sending' ? t('sending') : t('submit')}
         <span className="ic"><ArrowUpRight /></span>
       </button>

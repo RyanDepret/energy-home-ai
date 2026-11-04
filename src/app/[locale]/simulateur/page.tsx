@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { fromSearchParams } from '@/lib/logement';
 import { pageMetadata } from '@/lib/seo';
@@ -9,9 +10,14 @@ import { rich } from '@/lib/rich';
 
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
-export async function generateMetadata({ params }: Props) {
+/**
+ * La canonique pointe toujours vers /simulateur. Avec des paramètres (résultat, ?edit=1, URL invalide),
+ * la page n'est pas indexée, pour éviter des milliers de variantes dans Google ; les liens restent suivis.
+ */
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return { ...(await pageMetadata(locale, 'result', '/simulateur')), robots: { index: true, follow: true } };
+  const hasParams = Object.keys(await searchParams).length > 0;
+  return { ...(await pageMetadata(locale, 'result', '/simulateur')), robots: { index: !hasParams, follow: true } };
 }
 
 /**

@@ -122,7 +122,7 @@ export function SimulatorForm({ initial }: { initial?: Logement | null }) {
         </p>
       </div>
 
-      <button type="submit" className="btn btn-lg" style={{ width: '100%' }}>
+      <button type="submit" className="btn btn-lg btn-block">
         {t('submit')}
         <span className="ic"><ArrowUpRight /></span>
       </button>
