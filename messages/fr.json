@@ -296,8 +296,10 @@
     "probability": "Probabilité",
     "hesitates": "Le modèle hésite aussi avec la classe {classe}.",
     "seeDetail": "Voir le détail",
-    "scaleKick": "Échelle DPE · kWh/m²·an",
+    "scaleKick": "Échelle DPE",
     "scaleHint": "Cliquez sur une classe pour comparer",
+    "scaleGes": "La classe officielle tient aussi compte des émissions de gaz à effet de serre.",
+    "scaleSmall": "Pour les logements de 40 m² ou moins, les seuils officiels sont adaptés à la surface (arrêté du 25 mars 2024) : l’échelle ci-dessus est celle des logements plus grands.",
     "yours": "Votre logement",
     "impl": {
       "kick": "(01) — Ce que ça implique",

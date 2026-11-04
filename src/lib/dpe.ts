@@ -5,10 +5,18 @@
 export const CLASSES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const;
 export type DpeClass = (typeof CLASSES)[number];
 
-/** Seuils d'énergie primaire en kWh/m²·an (bornes hautes, G au-delà de 420). */
+/**
+ * Libellés d'affichage des seuils d'énergie primaire, en kWh/m²·an (logements de plus de 40 m²).
+ * Arrêté du 31 mars 2021 : consommation arrondie à l'entier inférieur, inégalités strictes (A < 70, B < 110…).
+ * Les logements de 40 m² ou moins ont des seuils adaptés à la surface (arrêté du 25 mars 2024, NOR TREL2330369A),
+ * non implémentés : la page résultat le signale.
+ */
 export const RANGES: Record<DpeClass, string> = {
-  A: '≤ 70', B: '71 – 110', C: '111 – 180', D: '181 – 250', E: '251 – 330', F: '331 – 420', G: '> 420',
+  A: '< 70', B: '70 – 109', C: '110 – 179', D: '180 – 249', E: '250 – 329', F: '330 – 419', G: '≥ 420',
 };
+
+/** Surface (m²) jusqu'à laquelle les seuils officiels sont adaptés (arrêté du 25 mars 2024). */
+export const SMALL_SURFACE_MAX = 40;
 
 export function isDpeClass(value: unknown): value is DpeClass {
   return typeof value === 'string' && (CLASSES as readonly string[]).includes(value);

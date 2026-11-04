@@ -296,8 +296,10 @@
     "probability": "Probability",
     "hesitates": "The model also hesitates with class {classe}.",
     "seeDetail": "See details",
-    "scaleKick": "DPE scale · kWh/m²·yr",
+    "scaleKick": "DPE scale",
     "scaleHint": "Click a class to compare",
+    "scaleGes": "The official class also takes greenhouse gas emissions into account.",
+    "scaleSmall": "For homes of 40 m² or less, the official thresholds are adjusted to the floor area (order of 25 March 2024): the scale above is the one for larger homes.",
     "yours": "Your home",
     "impl": {
       "kick": "(01) — What it means",

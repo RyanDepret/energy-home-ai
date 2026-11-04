@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { ApiError, predict } from '@/lib/api';
-import { CLASSES, RANGES, runnerUp, rentalKey, type DpeClass } from '@/lib/dpe';
+import { CLASSES, RANGES, SMALL_SURFACE_MAX, runnerUp, rentalKey, type DpeClass } from '@/lib/dpe';
 import { pct } from '@/lib/format';
 import { toSearchParams } from '@/lib/logement';
 import { rich } from '@/lib/rich';
@@ -121,7 +121,7 @@ export function ResultView({ logement }: { logement: Logement }) {
 
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
-              <p className="kick">{t('scaleKick')}</p>
+              <p className="kick">{t('scaleKick')} · <span className="nocase">{t('unit')}</span></p>
               <p className="kick muted">{t('scaleHint')}</p>
             </div>
             <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -143,6 +143,8 @@ export function ResultView({ logement }: { logement: Logement }) {
                 <strong style={{ color: 'var(--ink)' }}>{t('classLabel', { classe: shown, label: t(`labels.${shown}`) })}</strong> · {RANGES[shown]} {t('unit')}
               </p>
             )}
+            <p className="small" style={{ marginTop: 18 }}>{t('scaleGes')}</p>
+            {logement.surface <= SMALL_SURFACE_MAX && <p className="small" style={{ marginTop: 8 }}>{t('scaleSmall')}</p>}
           </div>
         </div>
       </section>
