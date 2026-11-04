@@ -29,11 +29,16 @@ export interface Prediction {
   modelVersion?: string;
 }
 
-/** Réponse de `POST /agent` : textes générés, items en texte libre. */
+/**
+ * Réponse de `POST /agent` : textes générés, items en texte libre. `travaux.titre` est choisi par l'API selon la
+ * classe (vide si absent : le site affiche alors son titre par défaut). `sources` : URL officielles des documents
+ * transmis au modèle (vide si absentes).
+ */
 export interface Recommandations {
   situation: { resume: string; detail: string };
-  travaux: { resume: string; items: string[] };
+  travaux: { titre: string; resume: string; items: string[] };
   aides: { resume: string; items: string[] };
+  sources: string[];
 }
 
 /** Source renvoyée par `POST /chat` : un extrait du document et son score de similarité. */

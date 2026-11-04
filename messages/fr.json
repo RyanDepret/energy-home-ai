@@ -61,7 +61,7 @@
     "follow": "Suivre",
     "ademe": "Données ADEME",
     "builtBy": "Conçu et développé par",
-    "role": "ingénieur IA",
+    "role": "étudiant ingénieur IA",
     "rights": "© {year} EnergyHome AI · Données DPE : ADEME, Licence Ouverte",
     "legal": "Mentions légales",
     "privacy": "Confidentialité",
@@ -122,7 +122,7 @@
         {
           "verb": "Agir",
           "title": "Les bons travaux",
-          "text": "Un agent IA priorise les travaux, les chiffre et repère les aides possibles."
+          "text": "Un agent IA propose des travaux adaptés à votre logement et repère les aides possibles."
         }
       ],
       "stats": [
@@ -173,7 +173,7 @@
         {
           "t1": "L’agent",
           "t2": "de rénovation",
-          "text": "Il analyse votre situation, priorise les travaux, les chiffre et repère les aides auxquelles vous pourriez prétendre.",
+          "text": "Il analyse votre situation à partir de documents officiels, propose des travaux adaptés et repère les aides auxquelles vous pourriez prétendre.",
           "tags": [
             "Agent IA",
             "Travaux",
@@ -327,12 +327,12 @@
       "valueText": "Le DPE figure dans toute annonce de vente ou de location. Une meilleure classe rassure les acheteurs et les locataires.",
       "nextKick": "Prochaine étape",
       "nextTitle": "Des pistes de travaux",
-      "nextText": "L’agent IA ci-dessous propose les travaux prioritaires et les aides auxquelles vous pourriez prétendre."
+      "nextText": "L’agent IA ci-dessous propose des travaux adaptés à votre logement et les aides auxquelles vous pourriez prétendre."
     },
     "agent": {
       "kick": "(02) — Agent IA",
       "title": "Votre plan <acc>de rénovation.</acc>",
-      "lead": "L’agent analyse votre logement à partir de documents de référence, puis propose des travaux prioritaires et les aides à étudier.",
+      "lead": "L’agent analyse votre logement à partir de documents de référence, puis propose des travaux adaptés, les aides à étudier et les liens vers ces documents.",
       "run": "Obtenir des recommandations",
       "rerun": "Régénérer",
       "idle": "Lancez l’agent pour obtenir un plan adapté à votre logement. L’analyse prend une dizaine de secondes.",
@@ -344,8 +344,9 @@
       "current": "Classe actuelle",
       "rentalUntil": "Location",
       "situation": "Situation actuelle",
-      "works": "Travaux prioritaires",
+      "works": "Travaux recommandés",
       "aids": "Aides disponibles",
+      "sources": "Documents de référence",
       "note": "Textes générés par IA (Claude Haiku). Les montants éventuellement cités sont indicatifs : à confirmer avec un conseiller France Rénov’.",
       "error": "L’agent n’a pas pu répondre. Réessayez dans un instant."
     },

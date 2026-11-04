@@ -6,7 +6,7 @@ import { ApiError, recommandations } from '@/lib/api';
 import { rentalKey, type DpeClass } from '@/lib/dpe';
 import { rich } from '@/lib/rich';
 import type { Logement, Recommandations } from '@/lib/types';
-import { Check, Info, Spark } from '../Icons';
+import { ArrowUpRight, Check, Info, Spark } from '../Icons';
 
 const RENT_YEAR = { free: '✓', e2034: '2034', f2028: '2028', g2025: '2025' } as const;
 
@@ -136,7 +136,7 @@ export function AgentPanel({ logement, classe }: { logement: Logement; classe: D
 
                 <div className="agent-grid">
                   <div>
-                    <h3 className="h3" style={{ fontSize: 26 }}>{t('agent.works')}</h3>
+                    <h3 className="h3" style={{ fontSize: 26 }}>{rec.travaux.titre || t('agent.works')}</h3>
                     {rec.travaux.resume && <p className="small" style={{ marginTop: 8 }}>{rec.travaux.resume}</p>}
                     <ol className="works">
                       {rec.travaux.items.map((w, k) => (
@@ -160,6 +160,21 @@ export function AgentPanel({ logement, classe }: { logement: Logement; classe: D
                     <p className="small" style={{ marginTop: 20, fontSize: 12.5 }}>{t('agent.note')}</p>
                   </div>
                 </div>
+
+                {rec.sources.length > 0 && (
+                  <div style={{ marginTop: 48 }}>
+                    <h3 className="kick">{t('agent.sources')}</h3>
+                    <ul style={{ listStyle: 'none', margin: '16px 0 0', padding: 0, display: 'grid', gap: 10 }}>
+                      {rec.sources.map((url) => (
+                        <li key={url} className="small" style={{ fontSize: 14, overflowWrap: 'anywhere' }}>
+                          <a href={url} className="lk" target="_blank" rel="noopener noreferrer">
+                            {url.replace(/^https?:\/\//i, '').replace(/\/$/, '')} <ArrowUpRight size={12} />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </div>

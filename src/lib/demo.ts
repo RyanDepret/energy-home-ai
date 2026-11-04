@@ -39,13 +39,15 @@ export function demoRecommandations(classe: DpeClass): Recommandations {
       detail: 'Ici s’affichera l’analyse de l’agent : implications réglementaires et financières pour ce logement.',
     },
     travaux: {
-      resume: 'Exemple : les travaux prioritaires proposés par l’agent.',
+      titre: '', // titre par défaut du site
+      resume: 'Exemple : les travaux proposés par l’agent.',
       items: ['[Travaux proposés par l’agent 1]', '[Travaux proposés par l’agent 2]'],
     },
     aides: {
       resume: 'Exemple : les aides mentionnées par l’agent.',
       items: ['[Aide mentionnée par l’agent 1]', '[Aide mentionnée par l’agent 2]'],
     },
+    sources: [], // aucun faux document de référence en démonstration
   };
 }
 

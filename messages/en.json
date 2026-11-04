@@ -61,7 +61,7 @@
     "follow": "Follow",
     "ademe": "ADEME data",
     "builtBy": "Designed and built by",
-    "role": "AI engineer",
+    "role": "AI engineering student",
     "rights": "© {year} EnergyHome AI · DPE data: ADEME, Open Licence",
     "legal": "Legal notice",
     "privacy": "Privacy",
@@ -122,7 +122,7 @@
         {
           "verb": "Act",
           "title": "The right work",
-          "text": "An AI agent prioritises the work, prices it and finds the grants you may qualify for."
+          "text": "An AI agent suggests work suited to your home and finds the grants you may qualify for."
         }
       ],
       "stats": [
@@ -173,7 +173,7 @@
         {
           "t1": "The renovation",
           "t2": "agent",
-          "text": "It analyses your situation, prioritises the work, prices it and finds the grants you may qualify for.",
+          "text": "It analyses your situation using official documents, suggests suitable work and finds the grants you may qualify for.",
           "tags": [
             "AI agent",
             "Works",
@@ -327,12 +327,12 @@
       "valueText": "The DPE appears in every sale or rental listing. A better class reassures buyers and tenants.",
       "nextKick": "Next step",
       "nextTitle": "Renovation leads",
-      "nextText": "The AI agent below suggests the priority work and the grants you may qualify for."
+      "nextText": "The AI agent below suggests work suited to your home and the grants you may qualify for."
     },
     "agent": {
       "kick": "(02) — AI agent",
       "title": "Your renovation <acc>plan.</acc>",
-      "lead": "The agent analyses your home using reference documents, then suggests priority work and grants worth looking into.",
+      "lead": "The agent analyses your home using reference documents, then suggests suitable work, grants worth looking into and links to those documents.",
       "run": "Get recommendations",
       "rerun": "Regenerate",
       "idle": "Run the agent to get a plan tailored to your home. The analysis takes about ten seconds.",
@@ -344,8 +344,9 @@
       "current": "Current class",
       "rentalUntil": "Renting",
       "situation": "Current situation",
-      "works": "Priority work",
+      "works": "Recommended work",
       "aids": "Available grants",
+      "sources": "Reference documents",
       "note": "AI-generated text (Claude Haiku). Any amounts mentioned are indicative: confirm with a France Rénov’ adviser.",
       "error": "The agent could not answer. Please try again in a moment."
     },

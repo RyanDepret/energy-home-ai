@@ -101,7 +101,13 @@ export async function predict(l: Logement, signal?: AbortSignal): Promise<ApiRes
   }
 }
 
-type BlocApi = { resume?: string; detail?: string; items?: unknown[] };
+type BlocApi = { titre?: string; resume?: string; detail?: string; items?: unknown[] };
+
+/** Seules les URL http(s) deviennent des liens : rien d'autre (`javascript:`…) n'atteint un `href`. */
+function urlsSures(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  return v.filter((x): x is string => typeof x === 'string' && /^https?:\/\/\S+$/i.test(x.trim())).map((x) => x.trim());
+}
 
 /**
  * Recommandations de l'agent (`POST /agent`). `libelleChauffage` est un libellé lisible : l'API l'insère tel quel
@@ -111,7 +117,10 @@ export async function recommandations(
   l: Logement, classe: DpeClass, locale: string, libelleChauffage: string, signal?: AbortSignal,
 ): Promise<ApiResult<Recommandations>> {
   try {
-    const r = await call<{ recommandations: { situation?: BlocApi; travaux?: BlocApi; aides?: BlocApi } }>('/agent', {
+    const r = await call<{
+      recommandations: { situation?: BlocApi; travaux?: BlocApi; aides?: BlocApi };
+      sources?: unknown;
+    }>('/agent', {
       classe_dpe: classe,
       surface: l.surface,
       annee_construction: l.annee ?? anneeDebutPeriode(l.periode),
@@ -125,8 +134,13 @@ export async function recommandations(
     return {
       data: {
         situation: { resume: rec.situation?.resume ?? '', detail: rec.situation?.detail ?? '' },
-        travaux: { resume: rec.travaux?.resume ?? '', items: items(rec.travaux) },
+        travaux: {
+          titre: typeof rec.travaux?.titre === 'string' ? rec.travaux.titre.trim() : '',
+          resume: rec.travaux?.resume ?? '',
+          items: items(rec.travaux),
+        },
         aides: { resume: rec.aides?.resume ?? '', items: items(rec.aides) },
+        sources: urlsSures(r.sources),
       },
       demo: false,
     };
